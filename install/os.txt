@@ -1,0 +1,2 @@
+python-mysqldb
+php5.6-curl
