@@ -50,6 +50,58 @@ if (mysqli_query($connection, $query)) {
         echo "<br><br>\n";
 }
 
+# categories table
+$query = "CREATE TABLE `categories` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+  `approved` int(11) DEFAULT '0',
+  `enabled` int(11) DEFAULT '0',
+  `timestamp` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+
+if (mysqli_query($connection, $query)) {
+        echo "[+] Created new table categories. \n";
+        echo "<br><br>\n";
+} else {
+        echo "[+] Error creating new table: " . mysqli_error($connection);
+        echo "<br><br>\n";
+}
+
+# difficulties table
+$query = "CREATE TABLE `difficulties` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+  `points` int(11) DEFAULT '10',
+  `timestamp` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+
+if (mysqli_query($connection, $query)) {
+        echo "[+] Created new table difficulties. \n";
+        echo "<br><br>\n";
+} else {
+        echo "[+] Error creating new table: " . mysqli_error($connection);
+        echo "<br><br>\n";
+}
+
+# faqs table
+$query = "CREATE TABLE `faqs` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `question` varchar(1000) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  `answer` varchar(1000) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  `timestamp` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+
+if (mysqli_query($connection, $query)) {
+        echo "[+] Created new table faqs. \n";
+        echo "<br><br>\n";
+} else {
+        echo "[+] Error creating new table: " . mysqli_error($connection);
+        echo "<br><br>\n";
+}
+
 # Challenges table
 $query = "CREATE TABLE `challenges` (
 `id` int NOT NULL AUTO_INCREMENT,
