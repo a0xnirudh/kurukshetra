@@ -1,10 +1,12 @@
 <?php
-session_start();
+
+include($_SERVER['DOCUMENT_ROOT'].'/includes/core.php');
+require $_SERVER['DOCUMENT_ROOT'].'/database/db_credentials.php';
 
 # if not Authenticated redirect to login
-if(!isset($_SESSION['userData']['email']))
+if(!check_login())
 {
-    header('Location: ../login/index.php');
+    header('Location: /login/index.php');
     die();
 }
 
@@ -19,12 +21,9 @@ if(!isset($_GET['id']))
 # Careful about exponential
 $id = intval($_GET['id']);
 
-require __DIR__ . '/../database/db-credentials.php';
-
 # Get all the challenge details from DB
-$query = "SELECT * from challenges where id = '" . mysqli_real_escape_string($connection, $id) . "'";
-$result = mysqli_query($connection, $query);
-$row = mysqli_fetch_array($result);
+$row = get_challenge($id);
+$instructions = $row['instructions'];
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -35,8 +34,8 @@ $row = mysqli_fetch_array($result);
         <link rel="stylesheet" href="../staticfiles/css/font-awesome.min.css">
         <link rel="stylesheet" href="../staticfiles/css/style.css">
         <link rel="stylesheet" href="../staticfiles/css/jquery-ui.css" />
-	    <script src="../staticfiles/js/jquery-2.1.3.js"></script>
-	    <script src="../staticfiles/js/jquery-ui.js"></script>
+	    <script src="/staticfiles/js/jquery-2.1.3.js"></script>
+	    <script src="/staticfiles/js/jquery-ui.js"></script>
         <link href='https://fonts.googleapis.com/css?family=Josefin+Sans|Bree+Serif|Righteous' rel='stylesheet' type='text/css'>
 
     <body>
@@ -47,11 +46,9 @@ $row = mysqli_fetch_array($result);
                 </div>
 
 <!-- Edit the title below -->
-
                 <div class="title-main">
                     <p><?php echo $row['name']; ?></p>
                 </div>
-
 <!-- Edit the title below -->
 
             </div>
@@ -70,51 +67,33 @@ $row = mysqli_fetch_array($result);
             <div class="head1" style="padding:0;">
                 <p><i class="fa fa-code fa-lg"></i> Code Editor</p>
             </div>
-
-
 <!-- Edit the text below -->
-
-
             <div class="heading animated bounceInLeft">
                 <div class="introdution-text">
-
                     <h3 id="introdution-title">Introduction</h3>
-
                     <p id="head-text">
                         <?php echo $row['intro']; ?>
                     </p>
-
                 </div>
-
                 <div class="instructions">
                     <p class="instructions-btn">Instructions</p>
                     <div class="instructions-text">
                         <p class="font2">
-                            This area shows the instructions to be followed.
+                            Please follow the below instructions to solve this challenge.
                         </p>
                         <div class="instruction-list">
-                            <li class="font2">
-                                Instruction 1
-                            </li>
-                            <li class="font2">
-                                Instruction 2
-                            </li>
-                            <li class="font2">
-                                Instruction 3
-                            </li>
-                            <li class="font2">
-                                Instruction 4
-                            </li>
+                            <ui>
+                                <?php 
+                                    foreach (explode("\n",$instructions) as $instruction) {
+                                        echo '<li class="font2">'.$instruction.'</li>';
+                                    }
+                                ?>
+                            </ui>
                         </div>
                     </div>
-
-
-
                         <div class="hint">
                             <p class="hint-header">Stuck <i class="fa fa-question"></i> <span class="get">Get a hint!</span> <span class="hint-arrow"><i class="fa fa-chevron-down"></i></span></p>
                         </div>
-
-
                         <div class="hint-text">
                             <p class="font-intro" >
                                 Hint intro here.
@@ -160,7 +139,7 @@ $row = mysqli_fetch_array($result);
 
 <!-- Change the code below -->
 
-                    <div id="editor"> <?php echo htmlspecialchars($row['code']); ?></div>
+                    <div id="editor"> <?php echo htmlspecialchars(base64_decode($row['code'])); ?></div>
 
 
 <!-- End of editor code -->
@@ -182,12 +161,9 @@ $row = mysqli_fetch_array($result);
 
         </div>
     </div>
-
-
-
         <!-- Start of ace editor configuration -->
-        <script src="../staticfiles/ace/src-min/ace.js" type="text/javascript" charset="utf-8"></script>
-        <script src="../staticfiles/ace/src-min/mode-php.js"></script>
+        <script src="/staticfiles/ace/src-min/ace.js" type="text/javascript" charset="utf-8"></script>
+        <script src="/staticfiles/ace/src-min/mode-php.js"></script>
 
         <script>
 
@@ -267,8 +243,8 @@ $row = mysqli_fetch_array($result);
             $(".output-text").resizable({ handles: 'n, e, s, w, ne, sw, nw' });
         </script>
 
-        <script src="staticfiles/js/bootstrap.min.js"></script>
-        <script src="staticfiles/js/wow.min.js"></script>
+        <script src="/staticfiles/js/bootstrap.min.js"></script>
+        <script src="/staticfiles/js/wow.min.js"></script>
 
         <script>
             var hide = true;

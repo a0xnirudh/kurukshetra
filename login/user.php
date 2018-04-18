@@ -1,5 +1,5 @@
 <?php
-include '../database/db-credentials.php';
+include($_SERVER['DOCUMENT_ROOT'].'/database/db_credentials.php');
 class User {
     private $dbHost;
     private $dbUsername;
@@ -8,20 +8,8 @@ class User {
     private $userTbl = 'users';
     
     function __construct(){
-        global $host, $db_name, $db_user, $db_pass;
-        $this->dbHost = $host;
-        $this->dbUsername = $db_user;
-        $this->dbPassword = $db_pass;
-        $this->dbName = $db_name;
-        if(!isset($this->db)){
-            // Connect to the database
-            $conn = new mysqli($this->dbHost, $this->dbUsername, $this->dbPassword, $this->dbName);
-            if($conn->connect_error){
-                die("Failed to connect with MySQL: " . $conn->connect_error);
-            }else{
-                $this->db = $conn;
-            }
-        }
+        global $conn;
+        $this->db = $conn;
     }
     
     function checkUser($userData = array()){
@@ -47,5 +35,27 @@ class User {
         //Return user data
         return $userData;
     }
+
+    function checkAdmin($userData = array()){
+        $prevQuery = "SELECT is_admin FROM ".$this->userTbl." WHERE oauth_provider = '".$userData['oauth_provider']."' AND oauth_uid = '".$userData['oauth_uid']."' AND is_admin=1 LIMIT 1";
+        $prevResult = $this->db->query($prevQuery);
+        $_SESSION['userData']['is_admin'] = $prevResult->num_rows;
+        
+        return $_SESSION['userData']['is_admin'];
+    }
+
+    function checkUserCount(){
+        $prevQuery = "SELECT * FROM ".$this->userTbl;
+        $prevResult = $this->db->query($prevQuery);
+        
+        return $prevResult->num_rows;
+    }
+
+    function setAdmin($userData = array()){
+        $query = "UPDATE users SET is_admin = 1 WHERE oauth_provider = '".$userData['oauth_provider']."' AND oauth_uid = '".$userData['oauth_uid']."'";
+        $update = $this->db->query($query);
+        return true;
+    }
+
 }
 ?>

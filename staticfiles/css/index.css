@@ -1,4 +1,4 @@
-#nav {
+/*#nav {
     background-color: #000000;
     background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#fff), to(#f0f0f0));
     background-image: -webkit-linear-gradient(top, #444444, #0A0A0A);
@@ -26,7 +26,7 @@
 	font-size: 2.3em;
 	font-weight: 600;
 	color:white;
-}
+}*/
 
 .title-main p {
 	color:white;
@@ -38,7 +38,7 @@
 }
 
 #easy-med-hard-btn {
-    margin-top:80px;
+    /*margin-top:80px;*/
     margin-right:5%;
 }
 

@@ -1,6 +1,6 @@
 <?php
 
-require __DIR__ . '/../database/db-credentials.php';
+require __DIR__ . '/../database/db_credentials.php';
 
 class Http {
 
@@ -52,7 +52,7 @@ class UnitTest extends Http {
     public $unittest = "";
 
     function __construct() {
-        $this->folder = md5(uniqid(rand(), true));
+        $this->folder = md5("aaa");
     } 
 
     public function mysqlConnect() {
@@ -157,3 +157,52 @@ $docker -> createContainer();
 $docker -> execContainer();
 $docker -> removeContainer();
 
+
+/*
+
+# create a random folder each time and write the files to it.
+$folder = md5(uniqid(rand(), true));
+$file = "src.php";
+
+shell_exec("mkdir -p uploads/" . $folder);
+shell_exec("cp unittest.php uploads/" . $folder);
+
+$fh = fopen("uploads/" . $folder . "/" . $file, 'w+');
+
+$stringData = "<?php
+
+class Src {
+";
+fwrite($fh, $stringData);
+
+$stringData = $_POST['function'];
+fwrite($fh, $stringData);
+
+$stringData = "\n }";
+fwrite($fh, $stringData);
+fclose($fh);
+
+$current_path = realpath(dirname(__FILE__));
+
+
+$output = shell_exec("docker run -v " . $current_path ."/uploads/" . $folder . "/:/var/www/ hackademic phpunit /var/www/unittest.php");
+
+#echo $attachStream;
+
+ob_flush();
+//echo $output;
+
+if (stripos($output, 'fail') !== false) {
+
+    $pos1 = stripos($output, '"');
+    $pos2 = stripos($output, '.', $pos1 + 1);
+    $payload = substr($output, $pos1, $pos2 - $pos1);
+    //echo $payload;
+    echo "Failed, the function won't properly sanitize the payload: " . $payload . ". \n\nPlease try again !";
+}
+else {
+    echo "Correct, Good job completing the challenge !";
+}
+shell_exec("rm -rf uploads/");
+?>
+*/
