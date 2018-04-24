@@ -513,6 +513,69 @@
 		return $result;
 	}
 
+	function add_challenge($post,$files){
+		global $conn;
+	    $name = $post['name'];
+	    $code = base64_encode(file_get_contents($files['code']['tmp_name']));
+	    $unittests = base64_encode(file_get_contents($files['unittests']['tmp_name']));
+	    $intro = $post['intro'];
+	    $instructions = $post['instructions'];
+	    $references = $post['references'];
+	    $approved = 1;
+	    $enabled = 1;
+	    $difficulty = strtolower($post['difficulty']);
+	    $type = strtolower($post['type']);
+	    $language = strtolower($post['language']);
+
+	    if($difficulty == 'Easy')
+	        $points = 10;
+	    if($difficulty == 'Medium')
+	        $points = 20;
+	    if($difficulty == 'Hard')
+	        $points = 30;
+
+	    $prevQuery = "INSERT INTO challenges(name,code,intro,instructions,reference,approved,enabled,points,difficulty,type,language) values(?,?,?,?,?,?,?,?,?,?,?)";
+	    $stmt = $conn->prepare($prevQuery);
+
+	    $stmt->bind_param("sssssdddsss",$name,$code,$intro,$instructions,$references,$approved,$enabled,$points,$difficulty,$type,$language);
+	    $stmt->execute();
+	    $addchallengeresult = mysqli_stmt_affected_rows($stmt);
+
+	    if($addchallengeresult)
+	    {
+	    	$challenge_id = get_challenge_id($name,$code,$intro,$instructions,$references,$difficulty,$type,$language);
+	        if($challenge_id){
+		        $prevQuery = "INSERT INTO unittests(unittest,challenge_id) values(?,?)";
+		        $stmt = $conn->prepare($prevQuery);
+		        $stmt->bind_param("sd",$unittests,$challenge_id);
+		        $stmt->execute();
+		        $unittestresult = mysqli_stmt_affected_rows($stmt);
+		        var_dump($unittestresult);
+
+		        if(!$unittestresult)
+		        	return array(false,"Challenge Added Successfully. But unit tests failed to update.");
+		        else
+		        	return array(false,"Challenge Added Successfully");
+			}
+			else
+		        return array(true,"Challenge Failed to Add. Check data Once.");
+	    }
+	    else
+	        return array(true,"Challenge Failed to Add. Check data Once.");
+	}
+
+	function get_challenge_id($name,$code,$intro,$instructions,$references,$difficulty,$type,$language){
+		global $conn;
+		$prevQuery = "SELECT id from challenges where name=? AND code=? AND intro=? AND instructions=? AND reference=? AND difficulty=? AND type=? AND language=? limit 1";
+		$stmt = $conn->prepare($prevQuery);
+		$stmt->bind_param("ssssssss",$name,$code,$intro,$instructions,$references,$difficulty,$type,$language);
+		$stmt->execute();
+		$stmt->bind_result($id);
+		$stmt->fetch();
+
+		return $id;
+	}
+
 ?>
 
 

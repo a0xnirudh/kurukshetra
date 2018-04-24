@@ -4,38 +4,7 @@ check_admin(); //not logged in? redirect to login page
 
 list($error,$msg) = array(null,null);
 if(isset($_POST) && $_POST != array()){
-    include($_SERVER['DOCUMENT_ROOT'].'/database/db_credentials.php');
-    
-    $name = $_POST['name'];
-    $code = base64_encode(file_get_contents($_FILES['code']['tmp_name']));
-    $unittests = base64_encode(file_get_contents($_FILES['unittests']['tmp_name']));
-    $intro = $_POST['intro'];
-    $instructions = $_POST['instructions'];
-    $references = $_POST['references'];
-    $approved = 1;
-    $enabled = 1;
-    $difficulty = strtolower($_POST['difficulty']);
-    $type = strtolower($_POST['type']);
-    $language = strtolower($_POST['language']);
-
-    if($difficulty == 'Easy')
-        $points = 10;
-    if($difficulty == 'Medium')
-        $points = 20;
-    if($difficulty == 'Hard')
-        $points = 30;
-
-    $prevQuery = "INSERT INTO challenges(name,code,intro,instructions,reference,approved,enabled,points,difficulty,type,language) values(?,?,?,?,?,?,?,?,?,?,?)";
-    $stmt = $conn->prepare($prevQuery);
-
-    $stmt->bind_param("sssssdddsss",$name,$code,$intro,$instructions,$references,$approved,$enabled,$points,$difficulty,$type,$language);
-    $stmt->execute();
-    $prevResult = mysqli_stmt_affected_rows($stmt);
-    
-    if($prevResult)
-        list($error,$msg) = array(false,"Challenge Added Successfully");
-    else
-        list($error,$msg) = array(true,"Challenge Failed to Added. Check data Once.");
+    list($error,$msg) = add_challenge($_POST,$_FILES);
 }
 ?>
 
