@@ -14,7 +14,7 @@ $config = parse_ini_file('/var/config/.playground.ini'); //read from config file
 $clientId = $config['clientId'];
 $clientSecret = $config['clientSecret'];
 
-$redirectURL = "http://" . $_SERVER['SERVER_NAME'] . "/login/index.php";
+$redirectURL = "http://" . $_SERVER['SERVER_NAME']. "/login/index.php";
 
 //Call Google API
 $gClient = new Google_Client();
@@ -24,4 +24,3 @@ $gClient->setClientSecret($clientSecret);
 $gClient->setRedirectUri($redirectURL);
 
 $google_oauthV2 = new Google_Oauth2Service($gClient);
-?>

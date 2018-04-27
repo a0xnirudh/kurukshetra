@@ -2,7 +2,6 @@
 
 import os
 import sys
-import MySQLdb
 import subprocess
 
 sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__),
@@ -30,7 +29,6 @@ class Install:
         This function will install docker and if docker is already installed,it
         will skip the installation.
 
-        All logs during the install are saved to hackademic_logs/install.logs
         """
         print("[+] Installing Docker and necessary supporting plugins")
         print("[+] This could take some time. Please wait ...")
@@ -90,10 +88,10 @@ class Install:
 
         """
         print("[+] Building and Configuring Docker")
-        subprocess.call("docker rmi -f hackademic", stdout=subprocess.PIPE,
+        subprocess.call("docker rmi -f kurukshetra", stdout=subprocess.PIPE,
                         stderr=subprocess.STDOUT, shell=True)
         try:
-            subprocess.check_call("docker build -t hackademic "+self.file_location,
+            subprocess.check_call("docker build -t kurukshetra "+self.file_location,
                                   stdout=subprocess.PIPE,
                                   stderr=subprocess.STDOUT, shell=True)
 
@@ -101,14 +99,6 @@ class Install:
             print(str(exception))
             exit()
 
-    def install_pip_tools(self):
-        """
-        All python dependencies are installed here
-        """
-        print("[+] Installing additional requirements")
-        install_file = open(self.pip_install_tools, "r")
-        for i in install_file.readlines():
-            self.run_command("sudo -E pip install --upgrade " + i)
 
 
     def install_os_tools(self):
@@ -128,7 +118,6 @@ def main():
     install.install_docker()
     install.docker_image()
     install.build_docker()
-    install.install_pip_tools()
     install.install_os_tools()
 
     install.install_finish()

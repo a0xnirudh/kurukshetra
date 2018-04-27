@@ -1,18 +1,29 @@
 <?php
-//Include GP config file && User class
-include_once 'user.php';
-include_once 'gpconfig.php';
 
-function print_message($error,$msg){
-    if($msg){
-        if(!$error){
+require_once 'user.php';
+require_once 'gpconfig.php';
+
+/**
+ * Prints success/error messages
+ *
+ * Function which prints the error messages depending up on success or failure
+ * of an action
+ *
+ * @param boolean $error Trigger error if true
+ * @param string  $msg   Message printed to the user
+ *
+ * @return void
+ */
+function Print_message($error, $msg)
+{
+    if ($msg) {
+        if (!$error) {
             ?>
             <div class="alert alert-success">
                 <strong>Success!</strong> <?php echo $msg; ?>
             </div>
             <?php
-        }
-        else{
+        } else {
             ?>
             <div class="alert alert-danger">
                 <strong>Danger!</strong> <?php echo $msg; ?>
@@ -23,7 +34,7 @@ function print_message($error,$msg){
 }
 
 
-if(isset($_GET['code'])){
+if (isset($_GET['code'])) {
     $gClient->authenticate($_GET['code']);
     $_SESSION['token'] = $gClient->getAccessToken();
     header('Location: ' . filter_var($redirectURL, FILTER_SANITIZE_URL));
@@ -33,7 +44,7 @@ if (isset($_SESSION['token'])) {
     $gClient->setAccessToken($_SESSION['token']);
 }
 
-if ($gClient->getAccessToken() && !(isset($_GET['status']) && $_GET['status'] == 403)) {
+if ($gClient->getAccessToken()&& !(isset($_GET['status'])&&$_GET['status'] == 403)) {
     //Get user profile data from google
     $gpUserProfile = $google_oauthV2->userinfo->get();
     
@@ -59,17 +70,17 @@ if ($gClient->getAccessToken() && !(isset($_GET['status']) && $_GET['status'] ==
     $_SESSION['userData'] = $userData;
 
     $userCount = $user->checkUserCount();
-    if($userCount == 1){
+    if ($userCount == 1) {
         $user->setAdmin($gpUserData);
     }
 
     $adminData = $user->checkAdmin($gpUserData);
 
-    if($adminData == 1)
+    if ($adminData == 1) {
         header('Location: /admin/');
-    else
+    } else {
         header('Location: /challenges/');
-
+    }
     die();
     
 } else {
@@ -91,14 +102,13 @@ if ($gClient->getAccessToken() && !(isset($_GET['status']) && $_GET['status'] ==
             </style>
             <script src="/staticfiles/css/jquery-1.10.2.min.js"></script>
             <script src="/staticfiles/css/bootstrap.min.js"></script>
-            </script>
         </head>
         <body>
                 <div class="container">    
-                <div id="loginbox" style="margin-top:50px;" class="mainbox col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">                    
+                <div id="loginbox" style="margin-top:50px;" class="mainbox col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">
                     <!-- <div style="text-align: center"><img src="images/logo.png" alt="Logo" width="160px" height="160px" ></div><br> -->
-                    <?php if(isset($_GET['status']) && $_GET['status'] == 403) print_message(true, "User Not allowed to login. Contact administrator."); ?>
-                    <?php if(isset($_GET['status']) && $_GET['status'] == 201) print_message(false, "Database setup successfull. Please login using google oauth. First user to login will become \"admin user\" :)"); ?>
+                    <?php if(isset($_GET['status']) && $_GET['status'] == 403) Print_message(true, "User Not allowed to login. Contact administrator."); ?>
+                    <?php if(isset($_GET['status']) && $_GET['status'] == 201) Print_message(false, "Database setup successful. Please login using google oauth. First user to login will become \"admin user\" :)"); ?>
                     <div class="panel panel-info"  style="text-align: center">
                         <div class="panel-heading">
                             <div class="panel-title">SignIn to Security Playground</div>
@@ -119,7 +129,5 @@ if ($gClient->getAccessToken() && !(isset($_GET['status']) && $_GET['status'] ==
         </html>
 
 <?php
-
-    }    
-
+}
 ?>

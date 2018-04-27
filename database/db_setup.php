@@ -1,8 +1,6 @@
-
 <?php
-echo "<br />";
-//sanitize function
 function s($userinput) {
+
     global $conn;
     return mysqli_real_escape_string($conn, $userinput);
 }
@@ -69,7 +67,7 @@ if (mysqli_query($conn, $query)) {
 }
 
 
-$query = "INSERT INTO `categories` (`name`) VALUES ('XSS')";
+$query = "INSERT INTO `categories` (`name`) VALUES ('XSS'), ('SQL'), ('CSRF'), ('IDOR'), ('CRLF'), ('LFI/RFI'), ('Others')";
 
 if (mysqli_query($conn, $query)) {
         echo "[+] Inserted dummy value to categories. \n";
@@ -156,10 +154,7 @@ if (mysqli_query($conn, $query)) {
 
 # Dummy data for challenges
 $name = s("PHP XSS");
-$code = s('function sanitize($user_input) {
-    $x = htmlspecialchars(trim($user_input));
-    return "<span title=\'".$x."\'>User input added as span title </span>";
-}');
+$code = 'PD9waHANCmNsYXNzIFNyYw0Kew0KICAgIGZ1bmN0aW9uIHNhbml0aXplKCR1c2VyX2lucHV0KQ0KICAgIHsNCiAgICAgICAgJHggPSBodG1sc3BlY2lhbGNoYXJzKHRyaW0oJHVzZXJfaW5wdXQpKTsNCiAgICAgICAgcmV0dXJuICI8c3BhbiB0aXRsZT0nIiAuICR4IC4gIic+VXNlciBpbnB1dCBhZGRlZCBhcyBzcGFuIHRpdGxlIDwvc3Bhbj4iOw0KICAgIH0NCn0=';
 $intro = s("XSS permits a malevolent user to inject his own code in vulnerable web pages. According to the OWASP 2010 Top 10 Application Security Risks, XSS attacks rank 2nd in the \"most dangerous\" list.");
 $instruction = s("This space contains the sample instruction.");
 $reference = s("These are sample reference links !!");
@@ -242,22 +237,8 @@ if (mysqli_query($conn, $query)) {
         echo "<br><br>\n";
 }
 
-# Dummy data for unittests
-$unittest = s('<?php
-$current_path = realpath(dirname(__FILE__));
-require_once($current_path . \'/src.php\');
-class SrcTest extends PHPUnit_Framework_TestCase
-{
-    public function setUp(){ }
-    public function tearDown(){ }
-    public function testIsSanitized()
-    {
-        $connObj = new Src();
-        $payload = "\'onload=\'alert(2)";
-        $result = $connObj->sanitize($payload);
-        $this->assertNotContains($payload, $result);
-    }
-}');
+// Dummy data for unittests
+$unittest = 'PD9waHANCnVzZSBQSFBVbml0XEZyYW1ld29ya1xUZXN0Q2FzZTsNCiRjdXJyZW50X3BhdGggPSByZWFscGF0aChkaXJuYW1lKF9fRklMRV9fKSk7DQpyZXF1aXJlX29uY2UoJGN1cnJlbnRfcGF0aCAuICcvc3JjLnBocCcpOw0KY2xhc3MgU3JjVGVzdCBleHRlbmRzIFRlc3RDYXNlDQp7DQogICAgcHVibGljIGZ1bmN0aW9uIHNldFVwKCl7IH0NCiAgICBwdWJsaWMgZnVuY3Rpb24gdGVhckRvd24oKXsgfQ0KICAgIHB1YmxpYyBmdW5jdGlvbiB0ZXN0SXNTYW5pdGl6ZWQoKQ0KICAgIHsNCiAgICAgICAgJGNvbm5PYmogPSBuZXcgU3JjKCk7DQogICAgICAgICRwYXlsb2FkID0gIlwnb25sb2FkPVwnYWxlcnQoMikiOw0KICAgICAgICAkcmVzdWx0ID0gJGNvbm5PYmotPnNhbml0aXplKCRwYXlsb2FkKTsNCiAgICAgICAgJHRoaXMtPmFzc2VydE5vdENvbnRhaW5zKCRwYXlsb2FkLCAkcmVzdWx0KTsNCiAgICB9DQoNCiAgICBwdWJsaWMgZnVuY3Rpb24gdGVzdElzU2FuaXRpemVkMigpDQogICAgew0KICAgICAgICAkY29ubk9iaiA9IG5ldyBTcmMoKTsNCiAgICAgICAgJHBheWxvYWQgPSBtZDUocmFuZG9tX2J5dGVzKDEwKSk7DQogICAgICAgICRyZXN1bHQgPSAkY29ubk9iai0+c2FuaXRpemUoJHBheWxvYWQpOw0KICAgICAgICAkZXhwZWN0ZWQgPSAiPHNwYW4gdGl0bGU9JyIgLiAkcGF5bG9hZCAuICInPlVzZXIgaW5wdXQgYWRkZWQgYXMgc3BhbiB0aXRsZSA8L3NwYW4+IjsNCiAgICAgICAgJHRoaXMtPmFzc2VydEVxdWFscygkZXhwZWN0ZWQsICRyZXN1bHQpOw0KICAgIH0NCn0=';
 
 $query = "INSERT INTO unittests (challenge_id, unittest) VALUES ('1', '$unittest')";
 
@@ -268,4 +249,3 @@ if (mysqli_query($conn, $query)) {
         echo "[+] Error insert into unittest: " . mysqli_error($conn);
         echo "<br><br>\n";
 }
-?>
