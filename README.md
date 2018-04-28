@@ -5,7 +5,7 @@
 </p>
 
 [![Github Release Version](https://img.shields.io/badge/release-V1.0-green.svg)](https://github.com/a0xnirudh/kurukshetra)
-[![Github Release Version](https://img.shields.io/badge/php-2.7-green.svg)](https://github.com/a0xnirudh/kurukshetra)
+[![Github Release Version](https://img.shields.io/badge/php-7.2-green.svg)](https://github.com/a0xnirudh/kurukshetra)
 [![License](https://img.shields.io/badge/License-GPL%20v3-green.svg)](https://github.com/a0xnirudh/kurukshetra/blob/master/LICENSE)
 [![RTA loves Open source](https://badges.frapsoft.com/os/v1/open-source.svg?v=103)](https://github.com/a0xnirudh/kurukshetra)
 
@@ -46,7 +46,7 @@ chmod 755 -R /var/www/html
 * Visit `http://localhost` or `http://127.0.0.1` to navigate into installation (will auto redirect into /installation/).
 
 <p align="center">
-<img src="/staticfiles/img/install.png">
+<img src="/staticfiles/img/install.png" width="700">
 </p>
 
 * Enter the MySQL DB credentials (user should have the permission to create database) and click on validate to see if the credentials are correct.
