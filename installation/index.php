@@ -1,13 +1,18 @@
 <?php
 
-exec("touch /var/config/.playground.ini");
-exec("chmod -R 777 /var/config/.playground.ini");
+if (file_exists('/var/config/.kurukshetra.ini')) {
+    header('Location: /challenges/');
+    die();
+} else {
+    exec("touch /var/config/.kurukshetra.ini");
+    exec("chmod -R 777 /var/config/.kurukshetra.ini");
+}
 ?>
 
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Play Ground Installation Script</title>
+    <title>Kurukshetra Installation Script</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="bootstrap/bootstrap.min.css" rel="stylesheet" />
@@ -54,11 +59,11 @@ exec("chmod -R 777 /var/config/.playground.ini");
     <div id="DBError" class="alert alert-danger"  style="width:700px">
         <strong>DB Error: </strong> Please use Installation wizard to properly set DB settings
     </div>
-    <button id="open-wizard" class="btn btn-success"> Install Security Play Ground</button><br /><br />
+    <button id="open-wizard" class="btn btn-success"> Install Kurukshetra</button><br /><br />
     Already installed? <a href="/login/"><button class="btn btn-warning"> login here</button></a>
 </center>
 
-<div class="wizard" id="installation-wizard" data-title="Install Security Playground">
+<div class="wizard" id="installation-wizard" data-title="Install Kurukshetra">
     <!-- Step 1 Name & passWord -->
     <div class="wizard-card" data-cardname="name">
         <h3>Database Settings</h3>

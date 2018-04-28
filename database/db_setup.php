@@ -41,7 +41,7 @@ $query = "CREATE TABLE `users` (
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;";
 
 if (mysqli_query($conn, $query)) {
-        echo "[+] Created users table security_playground. \n";
+        echo "[+] Created users table. \n";
         echo "<br><br>\n";
 } else {
         echo "[+] Error creating new table: users #" . mysqli_error($conn);

@@ -55,7 +55,7 @@ $instructions = $row['instructions'];
 <nav class="nav" id="nav">
     <div class="container">
         <div class="header animated bounceInLeft">
-            <p class="nav-bar-name name"><img src="../staticfiles/img/logo.svg" height="75px" style="margin-top:-15px"> Kurukshetra</p>
+            <p class="nav-bar-name name"><img src="../staticfiles/img/small_logo.svg" height="75px" style="margin-top:-15px"> Kurukshetra</p>
         </div>
 
         <!-- Edit the title below -->

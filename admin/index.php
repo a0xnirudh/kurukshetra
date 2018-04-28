@@ -25,7 +25,7 @@ check_admin();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-    <title>Security PlayGround</title>
+    <title>Kurukshetra</title>
 
     <!-- Bootstrap CSS CDN -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
@@ -97,7 +97,7 @@ check_admin();
         <nav class="navbar navbar-default">
             <div class="container-fluid">
                 <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                    <h3 id='page_title'>Security Playground</h3>
+                    <h3 id='page_title'>Kurukshetra</h3>
                 </div>
             </div>
         </nav>

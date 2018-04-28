@@ -92,7 +92,7 @@ if ($gClient->getAccessToken()&& !(isset($_GET['status'])&&$_GET['status'] == 40
             <meta charset="utf-8">
             <meta name="robots" content="noindex, nofollow">
 
-            <title>Login &amp; SignIn to Security Playground</title>
+            <title>Login &amp; SignIn to Kurukshetra</title>
                 <meta name="viewport" content="width=device-width, initial-scale=1">
             <link href="/staticfiles/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
             <link href="/staticfiles/css/bootstrap-social.css" rel="stylesheet" id="bootstrap-css-social">
@@ -111,7 +111,7 @@ if ($gClient->getAccessToken()&& !(isset($_GET['status'])&&$_GET['status'] == 40
                     <?php if(isset($_GET['status']) && $_GET['status'] == 201) Print_message(false, "Database setup successful. Please login using google oauth. First user to login will become \"admin user\" :)"); ?>
                     <div class="panel panel-info"  style="text-align: center">
                         <div class="panel-heading">
-                            <div class="panel-title">SignIn to Security Playground</div>
+                            <div class="panel-title">SignIn to Kurukshetra</div>
                         </div>     
 
                         <div style="padding-top:30px" class="panel-body" >

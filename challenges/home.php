@@ -26,7 +26,7 @@ if(!check_login()) {//not logged in? redirect to login page
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-    <title>Security PlayGround</title>
+    <title>Kurukshetra</title>
 
     <!-- Bootstrap CSS CDN -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
@@ -100,7 +100,7 @@ if(!check_login()) {//not logged in? redirect to login page
         <nav class="navbar navbar-default">
             <div class="container-fluid">
                 <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                    <span id="challenge-type-head" class="title">Security Playground Dashboard</span>
+                    <span id="challenge-type-head" class="title">Kurukshetra Dashboard</span>
                     <div class="pull-right">
                         Welcome <span class="title"><?php welcome_message(); ?> </span>
                     </div>

@@ -1,7 +1,7 @@
 <?php
 
 try {
-    $config = parse_ini_file('/var/config/.playground.ini');
+    $config = parse_ini_file('/var/config/.kurukshetra.ini');
     if ($config == []) {
         header("Location: /installation/index.php#DBError");
         die();

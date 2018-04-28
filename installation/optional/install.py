@@ -15,8 +15,6 @@ class Install:
     def __init__(self):
         self.user = os.environ['USER']
         self.file_location = os.path.abspath(os.path.dirname(__file__))
-        self.pip_install_tools = self.file_location + "/pip.txt"
-        self.os_install_tools = self.file_location + "/os.txt"
         return
 
     def run_command(self, command):
@@ -84,7 +82,7 @@ class Install:
         the challenges.
 
         Once building is over, try the command " docker images " and if you can
-        see animage named 'Hackademic', installation is successful.
+        see an image named 'Kurukshetra', installation is successful.
 
         """
         print("[+] Building and Configuring Docker")
@@ -99,15 +97,6 @@ class Install:
             print(str(exception))
             exit()
 
-
-
-    def install_os_tools(self):
-        install_file = open(self.os_install_tools, "r")
-        for i in install_file.readlines():
-            self.run_command("sudo apt-get install " + i)
-
-    # TODO: MySQL Configuration ?
-
     def install_finish(self):
         print("[+] Please restart your machine before contining.")
         print("[+] Installation is Successful. Happy hacking !")
@@ -118,7 +107,6 @@ def main():
     install.install_docker()
     install.docker_image()
     install.build_docker()
-    install.install_os_tools()
 
     install.install_finish()
 
