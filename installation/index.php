@@ -1,8 +1,11 @@
 <?php
 
 if (file_exists('/var/config/.kurukshetra.ini')) {
-    header('Location: /challenges/');
-    die();
+    $config = parse_ini_file('/var/config/.kurukshetra.ini');
+    if ($config !== []) {
+        header('Location: /login/');
+        die();
+    }
 } else {
     exec("touch /var/config/.kurukshetra.ini");
     exec("chmod -R 777 /var/config/.kurukshetra.ini");

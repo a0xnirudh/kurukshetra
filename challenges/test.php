@@ -104,16 +104,6 @@ class UnitTest extends Http
     public $unittest = "";
 
     /**
-     * UnitTest constructor.
-     *
-     * @var string $this->folder A random string for folder names
-     */
-    function __construct()
-    {
-        $this->folder = md5(mt_rand());
-    }
-
-    /**
      * Connecting to the MySQL - mysqlConnect()
      *
      * Function will connect to the MySQL to load the unittests
@@ -139,26 +129,6 @@ class UnitTest extends Http
         $fh = fopen("uploads/" . $this->folder . "/unittest.php", 'w+');
         fwrite($fh, base64_decode($this->unittest));
         fclose($fh);
-
-        /*
-        global $host, $db_name, $db_user, $db_pass;
-
-        $conn = new mysqli($host, $db_user, $db_pass, $db_name);
-        if ($conn->connect_error) {
-            die("Failed to connect with MySQL");
-        } else {
-            $query = "SELECT unittest from unittests where challenge_id=";
-            $query .= mysqli_real_escape_string($conn, $_POST['id']);
-            $result = $conn->query($query);
-            if ($result->num_rows > 0) {
-                $row = $result->fetch_assoc();
-                $this->unittest = $row['unittest'];
-                $fh = fopen("uploads/" . $this->folder . "/unittest.php", 'w+');
-                fwrite($fh, $this->unittest);
-                fclose($fh);
-            }
-        }
-        */
     }
 
     /**
@@ -173,6 +143,8 @@ class UnitTest extends Http
      */
     public function prepare()
     {
+        $this->folder = sha1(random_bytes(10));
+
         if (isset($_POST['function'])) {
             mkdir(__DIR__ . "/uploads/" . $this->folder);
             $fh = fopen(__DIR__ . "/uploads/" . $this->folder . "/src.php", 'w+');
@@ -182,6 +154,21 @@ class UnitTest extends Http
             fclose($fh);
 
         }
+    }
+
+    /**
+     * Cleaning up after running - cleanup()
+     *
+     * Once the Docker process is done, cleanup
+     *
+     * @return void
+     */
+    public function cleanup()
+    {
+        $directory = __DIR__ .'/uploads/' . $this->folder;
+        array_map('unlink', glob("$directory/*.*"));
+        rmdir($directory);
+        return;
     }
 }
 
@@ -294,4 +281,5 @@ $docker -> prepare();
 $docker -> mysqlConnect();
 $docker -> createContainer();
 $docker -> execContainer();
-# $docker -> removeContainer();
+$docker -> removeContainer();
+$docker -> cleanup();
