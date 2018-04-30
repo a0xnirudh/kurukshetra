@@ -149,7 +149,7 @@ class UnitTest extends Http
             mkdir(__DIR__ . "/uploads/" . $this->folder);
             $fh = fopen(__DIR__ . "/uploads/" . $this->folder . "/src.php", 'w+');
 
-            $stringData = base64_decode($_POST['function']);
+            $stringData = base64_decode(str_replace(" ", "+", $_POST['function']));
             fwrite($fh, $stringData);
             fclose($fh);
 
@@ -281,5 +281,5 @@ $docker -> prepare();
 $docker -> mysqlConnect();
 $docker -> createContainer();
 $docker -> execContainer();
-$docker -> removeContainer();
-$docker -> cleanup();
+#$docker -> removeContainer();
+#$docker -> cleanup();
