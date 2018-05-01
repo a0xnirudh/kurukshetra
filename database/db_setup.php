@@ -205,11 +205,11 @@ $query = "CREATE TABLE `hints` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `challenge_id` int(11) DEFAULT NULL,
   `hint_text` text COLLATE utf8_unicode_ci,
-  `timestamp` TIMESTAMP NOT NULL,
+  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `enabled` int(10) NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`),
-  KEY `challenge_id` (`challenge_id`),
-  CONSTRAINT `hints_ibfk_1` FOREIGN KEY (`challenge_id`) REFERENCES `challenges` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+  KEY `challenge_id` (`challenge_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
 
 if (mysqli_query($conn, $query)) {
         echo "[+] Created new table hints. \n";
@@ -249,3 +249,6 @@ if (mysqli_query($conn, $query)) {
         echo "[+] Error insert into unittest: " . mysqli_error($conn);
         echo "<br><br>\n";
 }
+
+
+

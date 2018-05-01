@@ -91,6 +91,30 @@ function get_challenges()
     return $result;
 }
 
+
+/**
+ * Get the list of hints for the challenge - get_hints()
+ *
+ * Returns a list of challenges based on the category.
+ *
+ * @return bool|mysqli_result
+ */
+function get_hints($id)
+{
+    global $conn;
+    $query = "SELECT hint_text from hints where challenge_id=? and enabled = 1";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("s",$id);
+    $stmt->execute();
+    $stmt->bind_result($hint);
+    $hints = array();
+    while($stmt->fetch())
+    {
+        array_push($hints,$hint);
+    }
+    return $hints;
+}
+
 /**
  * Get the list of difficulties - get_difficulties()
  *
@@ -360,15 +384,36 @@ function get_all_faq_data()
 {
     global $conn;
     $query = "SELECT * from faqs";
-    $all_users = mysqli_query($conn, $query);
+    $all_faqs = mysqli_query($conn, $query);
 
-    $users = [];
-    foreach ($all_users as $user) {
-        $user['enabled'] = (int)$user['enabled'];
-        $user['id'] = (int)$user['id'];
-        array_push($users, $user);
+    $faqs = [];
+    foreach ($all_faqs as $faq) {
+        $faq['enabled'] = (int)$faq['enabled'];
+        $faq['id'] = (int)$faq['id'];
+        array_push($faqs, $faq);
     }
-    return json_encode($users);
+    return json_encode($faqs);
+}
+
+/**
+ * Get all the HINTS - get_all_hint_data()
+ *
+ * Returns the list of all the HINTs.
+ *
+ * @return string
+ */
+function get_all_hint_data()
+{
+    global $conn;
+    $query = "SELECT * from hints";
+    $all_hints = mysqli_query($conn, $query);
+    $hints = [];
+    foreach ($all_hints as $hint) {
+        $hint['enabled'] = (int)$hint['enabled'];
+        $hint['id'] = (int)$hint['id'];
+        array_push($hints, $hint);
+    }
+    return json_encode($hints);
 }
 
 /**
@@ -625,6 +670,24 @@ function enable_disable_faq($id,$action){
         $action = 0;
 
     $prevQuery = "UPDATE faqs set enabled=? where id=?";
+    $stmt = $conn->prepare($prevQuery);
+
+    $stmt->bind_param("dd",$action,$id);
+    $stmt->execute();
+    $prevResult = mysqli_stmt_affected_rows($stmt);
+
+    return array("enabled"=>$action);
+}
+
+function enable_disable_hints($id,$action){
+    global $conn;
+
+    if($action == "enabled")
+        $action = 1;
+    else
+        $action = 0;
+
+    $prevQuery = "UPDATE hints set enabled=? where id=?";
     $stmt = $conn->prepare($prevQuery);
 
     $stmt->bind_param("dd",$action,$id);

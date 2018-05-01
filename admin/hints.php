@@ -1,11 +1,13 @@
 <?php
 /**
- * Edit challenges - view_edit.php
+ * HINTS - hints.php
  *
  * PHP version 7.2
  *
- * The existing challenges can be edited by the admins which includes all
- * the challenge details like introduction, challenge code, unit tests etc.
+ * Admin's can add/edit custom hint's based on the challenges/instructions
+ * that they want the user to know.
+ *
+ * Only an admin can edit the HINTS while users can view the HINTS.
  *
  * @category PHP
  * @package  Kurukshetra
@@ -14,30 +16,46 @@
  */
 
 require $_SERVER['DOCUMENT_ROOT'].'/includes/core.php';
+require $_SERVER['DOCUMENT_ROOT'].'/database/db_credentials.php';
+
 check_admin(); //not logged in? redirect to login page
 
-if (!isset($error)) {
-    list($error, $msg) = array(null, null);
-}
+list($error,$msg) = array(null,null);
+if (isset($_POST) && $_POST != []) {
 
-if (isset($_REQUEST['id'])) {
-    $id = $_REQUEST['id'];
+    $challenge_id = $_POST['challenge_id'];
+    $hint_text = $_POST['hint_text'];
+
+    $prevQuery = "INSERT INTO hints(challenge_id,hint_text) values(?,?)";
+    $stmt = $conn->prepare($prevQuery);
+
+    $stmt->bind_param("ds", $challenge_id, $hint_text);
+    $stmt->execute();
+    print_r($stmt);
+    $prevResult = mysqli_stmt_affected_rows($stmt);
+    if ($prevResult > 0) {
+        list($error, $msg) = array(false, "HINT Added Successfully");
+    } else {
+        list($error, $msg) = array(true, "HINT Failed to Added. Check data Once.");
+    }
 }
 ?>
+
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
     <title>Security PlayGround</title>
 
     <!-- Bootstrap CSS CDN -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
     <!-- Our Custom CSS -->
     <link rel="stylesheet" href="/staticfiles/css/base.css">
-    <!-- Latest compiled and minified CSS -->
+    <!-- jQuery CDN -->
+    <script src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.12.1/bootstrap-table.min.css">
 
     <!-- Latest compiled and minified JavaScript -->
@@ -50,17 +68,11 @@ if (isset($_REQUEST['id'])) {
             min-height: 50px;
         }
 
-        #challenge_data td:nth-child(odd) {
-            width: 120px;
-        }
-
-        #challenge_data table {
-            border: solid 1px #333333;
-            text-align: center;
+        td:nth-child(3){
+            text-align: left;
         }
 
     </style>
-
 </head>
 <body>
 <div class="wrapper">
@@ -80,7 +92,7 @@ if (isset($_REQUEST['id'])) {
                     Play Ground
                 </a>
             </li>
-            <li class="active">
+            <li>
                 <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false">
                     <i class="glyphicon glyphicon-home"></i>
                     Challenges
@@ -96,8 +108,8 @@ if (isset($_REQUEST['id'])) {
                     Users
                 </a>
             </li>
-            <li>
-                <a href="hints.php">
+            <li class="active">
+                <a href="#">
                     <i class="glyphicon glyphicon-link"></i>
                     HINTS
                 </a>
@@ -128,80 +140,69 @@ if (isset($_REQUEST['id'])) {
         <nav class="navbar navbar-default">
             <div class="container-fluid">
                 <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                    <h3 id='page_title'>
-                        <?php
-                        if (isset($id)) {
-                            echo "Update Challenge Details";
-                        } else {
-                            echo "Available Challenges";
-                        }
-                        ?>
-                    </h3>
+                    <h3 id='page_title'>Hints Section</h3>
                 </div>
             </div>
         </nav>
+
         <div id="page_content">
             <div id="result"></div>
             <?php
-            print_message($error, $msg);
-            if (isset($_POST) && $_POST != []) {
-                $post = array_map('htmlspecialchars', $_POST);
-                list($error, $msg) = update_challenge($post, $_FILES);
-                print_message($error, $msg);
-            }
-
-            if (isset($_GET['id'])) {
-                $id = $_GET['id'];
-                $challenge = get_challenge($id);
-                show_challenge($id, $challenge);
-            } else {
-                show_all_challenges();
+            if ($msg) {
+                if (!$error) {
+                    ?>
+                    <div class="alert alert-success">
+                        <strong>Success!</strong> <?php echo $msg; ?>
+                    </div>
+                    <?php
+                } else {
+                    ?>
+                    <div class="alert alert-danger">
+                        <strong>Danger!</strong> <?php echo $msg; ?>
+                    </div>
+                    <?php
+                }
             }
             ?>
-            <table id="table" data-pagination="true"></table>
-            <div id="pop">
-                <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                                <h4 class="modal-title" id="myModalLabel">Challenge Details</h4>
+            <nav class="navbar navbar-default">
+                <div class="container-fluid">
+                    <div class="container-fluid bg-4">
+                        <div class="row no-gutter">
+                            <div class="columns">
+                                <script src="/staticfiles/js/hints.js"></script>
+                                <table id="table" data-pagination="true"></table>
                             </div>
-                            <div class="modal-body">
-                                <table id="challenge_data">
-                                    <tr>
-                                        <td>Name</td><td id="chall_name"></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Introduction</td><td id="chall_intro"></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Instructions</td><td id="chall_instr"></td>
-                                    </tr>
-                                    <tr>
-                                        <td>References</td><td id="chall_ref"></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Code</td><td id="chall_code"></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Unittests</td><td id="chall_unit"></td>
-                                    </tr>
-                                </table>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            <div class="columns" id="add_new">
+                                <!-- Default form contact -->
+                                <form method="POST" action="hints.php" enctype="multipart/form-data">
+                                    <!-- Default input name -->
+                                    <label for="name" class="grey-text">challenge ID</label>
+                                    <input type="number" id="challenge_id" name="challenge_id" class="form-control">
+
+                                    <br>
+
+                                    <label for="name" class="grey-text">Hint</label>
+                                    <textarea type="text" id="hint_text" name="hint_text" class="form-control" rows=4></textarea>
+
+                                    <br>
+                                    <div class="text-center mt-4">
+                                        <br /><p><button class="btn btn-info" type="submit">Add FAQ<i class="fa fa-paper-plane-o ml-2"></i></button></p><br />
+                                    </div>
+                                </form>
+                                <!-- Default form contact -->
+
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="line"></div>
-            </div>
+                </div>
         </div>
-</body>
-</html>
-<!-- jQuery CDN -->
+    </div>
+    </nav>
+</div>
+<div class="line"></div>
+</div>
+</div>
 <!-- Bootstrap Js CDN -->
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
@@ -212,3 +213,5 @@ if (isset($_REQUEST['id'])) {
         });
     });
 </script>
+</body>
+</html>

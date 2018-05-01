@@ -37,6 +37,7 @@ $id = intval($_GET['id']);
 //Get all the challenge details from DB
 $row = get_challenge($id);
 $instructions = $row['instructions'];
+$hints = get_hints($id);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -108,24 +109,13 @@ $instructions = $row['instructions'];
                 <p class="hint-header">Stuck <i class="fa fa-question"></i> <span class="get">Get a hint!</span> <span class="hint-arrow"><i class="fa fa-chevron-down"></i></span></p>
             </div>
             <div class="hint-text">
-                <p class="font-intro" >
-                    Hint intro here.
-                </p>
-                <p class="font blue">
-                    Important hint text goes here.
-                </p>
-                <p class="font" style="font-size:1em;">
-                    More hint info goes here.
-                </p>
-                <p class="font black">
-                    function sanitize($user_input) {
-                    <br>
-                    $x = htmlspecialchars(trim($user_input));
-                    <br>
-                    return $x;
-                    <br>
-                    }
-                </p>
+                <div class="font black">
+                    <?php
+                        foreach ($hints as $hint) {
+                            echo '<li>'.$hint.'</li>';
+                        }
+                    ?>
+                </div>
             </div>
         </div>
     </div>

@@ -77,13 +77,19 @@ check_admin();
             </li>
             <li class="active">
                 <a href="#">
-                    <i class="glyphicon glyphicon-link"></i>
+                    <i class="glyphicon glyphicon-user"></i>
                     Users
                 </a>
             </li>
             <li>
+                <a href="hints.php">
+                    <i class="glyphicon glyphicon-link"></i>
+                    HINTS
+                </a>
+            </li>
+            <li>
                 <a href="faq.php">
-                    <i class="glyphicon glyphicon-paperclip"></i>
+                    <i class="glyphicon glyphicon-screenshot"></i>
                     FAQ
                 </a>
             </li>
@@ -95,7 +101,7 @@ check_admin();
             </li>
             <li>
                 <a href="/login/logout.php">
-                    <i class="glyphicon glyphicon-send"></i>
+                    <i class="glyphicon glyphicon-log-out"></i>
                     Logout
                 </a>
             </li>

@@ -2,7 +2,7 @@ $(document).ready(function(){
     var sortable = true;
     
     $('#table').bootstrapTable({
-        url: "api/get_all_faq_data.php",
+        url: "api/get_all_hint_data.php",
         columns: [{
             field: 'id',
             title: 'Id',
@@ -10,13 +10,13 @@ $(document).ready(function(){
             align: "center",
             sortable: sortable
         },{
-            field: 'question',
-            title: 'Question',
+            field: 'hint_text',
+            title: 'Hint',
             valign: 'middle',
             sortable: sortable
         }, {
-            field: 'answer',
-            title: 'Answer',
+            field: 'challenge_id',
+            title: 'Challenge ID',
             align: 'center',
             valign: 'middle',
             sortable: sortable
@@ -26,7 +26,7 @@ $(document).ready(function(){
             valign: 'middle',
             align: "center",
             sortable: sortable,
-            events: enable_faq,
+            events: enable_hint,
             formatter: operateFormatter,
         }]
     });
@@ -53,10 +53,10 @@ function operateFormatter(value, row, index) {
     ].join('');
 }
 
-window.enable_faq = {
+window.enable_hint = {
     'click .like': function (e, value, row, index) {
         console.log(row);
-        var url = "api/update_faq_state.php";
+        var url = "api/update_hint_state.php";
         action = "disabled";
         if(row.enabled != 1)
             action = "enabled";
@@ -68,7 +68,7 @@ window.enable_faq = {
 
         $.post(url, data, function(data1,success){
             print_message(row, action);
-            $.getJSON("api/get_all_faq_data.php",function(data1,success){
+            $.getJSON("api/get_all_hint_data.php",function(data1,success){
                 $("#table").bootstrapTable("load",data1);
             });
         });
@@ -76,7 +76,7 @@ window.enable_faq = {
 };
 
 function print_message(row, action){
-    var info = 'FAQ with id: '+row.id+' is '+action;
+    var info = 'HINT with id: '+row.id+' is '+action;
 
     if(action == "approved" || action == "enabled" || action == "updated")
     {

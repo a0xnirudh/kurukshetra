@@ -159,15 +159,6 @@ window.enable_challenge = {
     }
 };
 
-function update_challenge_state(id,action){
-    var url = "view_edit.php";
-    data = 'id='+id+'&action='+action;
-
-    $.post(url, data, function(data1,success){
-        alert('Challenge with ID: \''+id+'\' is \''+action+'\'');
-        window.location = ""
-    });
-}
 
 function print_message(row, action){
     var info = 'challenge with id: '+row.id+' is '+action;
