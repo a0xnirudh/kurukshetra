@@ -1,0 +1,20 @@
+## Topnav single links
+## if you want to list an external url, use external_url instead of url. the theme will apply a different link base.
+topnav:
+- title: Topnav
+  items:
+    - title: GitHub
+      external_url: https://github.com/a0xnirudh/kurukshetra
+
+#Topnav dropdowns
+topnav_dropdowns:
+- title: Topnav dropdowns
+  folders:
+    - title: Kurukshetra
+      folderitems:
+        - title: Source code
+          external_url: https://github.com/a0xnirudh/kurukshetra
+        - title: Live Demo
+          external_url: https://kurukshetra.io
+        - title: Documentation
+          external_url: https://docs.kurukshetra.io
