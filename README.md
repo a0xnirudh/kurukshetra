@@ -9,7 +9,10 @@
 [![License](https://img.shields.io/badge/License-GPL%20v3-green.svg)](https://github.com/a0xnirudh/kurukshetra/blob/master/LICENSE)
 [![RTA loves Open source](https://badges.frapsoft.com/os/v1/open-source.svg?v=103)](https://github.com/a0xnirudh/kurukshetra)
 
-Secure Coding Battle Playground
+**Kurukshetra** is a web framework that’s developed with the aim of being the first open source framework which provides a solid foundation to host reasonably complex **secure coding** challenges while still providing the ability to efficiently and dynamically execute each challenge on the basis of user input in a secure sandboxed environment.
+
+Kurukshetra is composed of two components, the backend framework written in PHP, which manages and leverages the underlying docker system to provide the secure **sandbox** for the challenge execution, and the frontend, which is a user facing web app providing all the necessary controls, for the admin to host and modify the challenges , and the user to execute and view the result of each of his input.
+
 
 ## Installation
 
