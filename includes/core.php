@@ -198,6 +198,7 @@ function add_challenge($post, $files)
     $unittests = base64_encode(file_get_contents($files['unittests']['tmp_name']));
     $intro = $post['intro'];
     $instructions = $post['instructions'];
+    $hints = $post['hints'];
     $references = $post['references'];
     $approved = 1;
     $enabled = 1;
@@ -213,10 +214,11 @@ function add_challenge($post, $files)
         $points = 30;
     }
 
-    $prevQuery = "INSERT INTO challenges(name,code,intro,instructions,reference,approved,enabled,points,difficulty,type,language) values(?,?,?,?,?,?,?,?,?,?,?)";
+
+    $prevQuery = "INSERT INTO challenges(name,code,intro,instructions,reference,approved,enabled,points,difficulty,type,language,hints) values(?,?,?,?,?,?,?,?,?,?,?,?)";
     $stmt = $conn->prepare($prevQuery);
 
-    $stmt->bind_param("sssssdddsss",$name,$code,$intro,$instructions,$references,$approved,$enabled,$points,$difficulty,$type,$language);
+    $stmt->bind_param("sssssdddssss",$name,$code,$intro,$instructions,$references,$approved,$enabled,$points,$difficulty,$type,$language,$hints);
     $stmt->execute();
     $addchallengeresult = mysqli_stmt_affected_rows($stmt);
 
@@ -274,6 +276,7 @@ function update_challenge($data, $files){
 
     $intro = $data['intro'];
     $instructions = $data['instructions'];
+    $hints = $data['hints'];
     $references = $data['references'];
     $difficulty = strtolower($data['difficulty']);
     $type = strtolower($data['type']);
@@ -287,10 +290,10 @@ function update_challenge($data, $files){
         $points = 30;
     }
 
-    $prevQuery = "UPDATE challenges set name=?,code=?,intro=?,instructions=?,reference=?,points=?,difficulty=?,type=?,language=? where id=?";
+    $prevQuery = "UPDATE challenges set name=?,code=?,intro=?,instructions=?,reference=?,points=?,difficulty=?,type=?,language=?,hints=? where id=?";
     $stmt = $conn->prepare($prevQuery);
 
-    $stmt->bind_param("sssssdssss",$name,$code,$intro,$instructions,$references,$points,$difficulty,$type,$language,$id);
+    $stmt->bind_param("sssssdsssss",$name,$code,$intro,$instructions,$references,$points,$difficulty,$type,$language,$hints,$id);
     $stmt->execute();
     $prevResult = mysqli_stmt_affected_rows($stmt);
 
