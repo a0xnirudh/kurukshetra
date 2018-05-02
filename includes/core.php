@@ -206,12 +206,14 @@ function add_challenge($post, $files)
     $type = strtolower($post['type']);
     $language = strtolower($post['language']);
 
-    if ($difficulty == 'Easy') {
+    if ($difficulty == 'easy') {
         $points = 10;
-    } else if ($difficulty == 'Medium') {
+    } else if ($difficulty == 'medium') {
         $points = 20;
-    } else if ($difficulty == 'Hard') {
+    } else if ($difficulty == 'hard') {
         $points = 30;
+    } else {
+        return array(true, "Invalid difficulty");
     }
 
 
@@ -282,12 +284,14 @@ function update_challenge($data, $files){
     $type = strtolower($data['type']);
     $language = strtolower($data['language']);
 
-    if ($difficulty == 'Easy') {
+    if ($difficulty == 'easy') {
         $points = 10;
-    } else if ($difficulty == 'Medium') {
+    } else if ($difficulty == 'medium') {
         $points = 20;
-    } else if ($difficulty == 'Hard') {
+    } else if ($difficulty == 'hard') {
         $points = 30;
+    } else {
+        return array(true, "Invalid difficulty");
     }
 
     $prevQuery = "UPDATE challenges set name=?,code=?,intro=?,instructions=?,reference=?,points=?,difficulty=?,type=?,language=?,hints=? where id=?";
@@ -566,7 +570,7 @@ function show_challenge($id, $challenge){
                     <!-- Default textarea introduction -->
                     <label for="intro" class="grey-text">Challenge Introduction*</label>
                     <textarea type="text" id="intro" name="intro" class="form-control" rows="4"><?php
-                        echo $challenge['intro'];
+                        echo htmlspecialchars($challenge['intro']);
                     ?></textarea>
 
                     <br>
@@ -574,19 +578,19 @@ function show_challenge($id, $challenge){
                     <!-- Default textarea references -->
                     <label for="instructions" class="grey-text">Challenge Instructions</label>
                     <textarea type="text" id="instructions" name="instructions" class="form-control" rows="4"><?php
-                        echo $challenge['instructions'];
+                        echo htmlspecialchars($challenge['instructions']);
                     ?></textarea>
                     <br>
                     <!-- Default textarea references -->
                     <label for="hints" class="grey-text">Challenge Hints</label>
                     <textarea type="text" id="hints" name="hints" class="form-control" rows="4"><?php
-                        echo $challenge['hints'];
+                        echo htmlspecialchars($challenge['hints']);
                     ?></textarea>
                     <br>
                     <!-- Default textarea references -->
                     <label for="references" class="grey-text">Challenge References</label>
                     <textarea type="text" id="references" name="references" class="form-control" rows="4"><?php
-                        echo $challenge['reference'];
+                        echo htmlspecialchars($challenge['reference']);
                     ?></textarea>
 
                     <br>

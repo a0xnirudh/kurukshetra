@@ -97,6 +97,7 @@ if ($gClient->getAccessToken()&& !(isset($_GET['status'])&&$_GET['status'] == 40
             <link href="/staticfiles/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
             <link href="/staticfiles/css/bootstrap-social.css" rel="stylesheet" id="bootstrap-css-social">
             <link href="/staticfiles/css/font-awesome.css" rel="stylesheet" id="font-awesome-css">
+            <link rel="shortcut icon" type="image/png" href="/staticfiles/img/favicon.png"/>
             <style type="text/css">
             
             </style>

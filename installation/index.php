@@ -18,6 +18,7 @@ if (file_exists('/var/config/.kurukshetra.ini')) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="bootstrap/bootstrap.min.css" rel="stylesheet" />
     <link href="bootstrap/bootstrap-wizard.css" rel="stylesheet" />
+    <link rel="shortcut icon" type="image/png" href="/staticfiles/img/favicon.png"/>
     <style type="text/css">
         .wizard-modal p {
             margin: 0 0 10px;

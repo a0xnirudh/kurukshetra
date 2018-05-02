@@ -55,12 +55,12 @@ $instructions = $row['instructions'];
 <nav class="nav" id="nav">
     <div class="container">
         <div class="header animated bounceInLeft">
-            <p class="nav-bar-name name"><img src="../staticfiles/img/small_logo.png" height="40px" style="margin-top:-15px"> Kurukshetra</p>
+            <p class="nav-bar-name name"><img src="../staticfiles/img/small_logo.png" height="40px" style="margin-top:-5px";> Kurukshetra</p>
         </div>
 
         <!-- Edit the title below -->
         <div class="title-main">
-            <p><?php echo $row['name']; ?></p>
+            <p><?php echo htmlspecialchars($row['name']); ?></p>
         </div>
         <!-- Edit the title below -->
 
@@ -85,7 +85,7 @@ $instructions = $row['instructions'];
         <div class="introdution-text">
             <h3 id="introdution-title">Introduction</h3>
             <p class="head-text">
-                <?php echo $row['intro']; ?>
+                <?php echo htmlspecialchars($row['intro']); ?>
             </p>
         </div>
         <div class="instructions">
@@ -98,7 +98,7 @@ $instructions = $row['instructions'];
                     <ui>
                         <?php
                         foreach (explode("\n", $instructions) as $instruction) {
-                            echo '<li class="font2">'.$instruction.'</li>';
+                            echo '<li class="font2">'.htmlspecialchars($instruction).'</li>';
                         }
                         ?>
                     </ui>
@@ -111,7 +111,7 @@ $instructions = $row['instructions'];
                 <div class="font black">
                     <?php
                     foreach (explode("\n", $hints) as $hint) {
-                        echo '<li>'.$hint.'</li>';
+                        echo '<li>'.htmlspecialchars($hint).'</li>';
                     }
                     ?>
             </div>

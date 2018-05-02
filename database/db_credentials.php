@@ -1,5 +1,7 @@
 <?php
 
+error_reporting(0);
+
 try {
     $config = parse_ini_file('/var/config/.kurukshetra.ini');
     if ($config == []) {

@@ -1,6 +1,11 @@
 <?php
 
-require __DIR__ . '/../database/db_credentials.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/includes/core.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/database/db_credentials.php';
+
+if (!check_login()) { //not logged in?
+    header('Location: /login/index.php'); //redirect to login page
+}
 
 /**
  * Class HTTP - HTTP is a class where functions are defined which can
@@ -267,10 +272,10 @@ class Docker extends UnitTest
     public function removeContainer()
     {
         // Killing the container
-        echo $this->httpPost($this->url . "/containers/" . $this->container_id . "/kill");
+        $this->httpPost($this->url . "/containers/" . $this->container_id . "/kill");
 
         // Removing the container
-        echo $this->httpDelete($this->url . "/containers/" . $this->container_id . "?force=1");
+        $this->httpDelete($this->url . "/containers/" . $this->container_id . "?force=1");
 
     }
 

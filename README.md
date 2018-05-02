@@ -14,6 +14,9 @@
 Kurukshetra is composed of two components, the backend framework written in PHP, which manages and leverages the underlying docker system to provide the secure **sandbox** for the challenge execution, and the frontend, which is a user facing web app providing all the necessary controls, for the admin to host and modify the challenges , and the user to execute and view the result of each of his input.
 
 
+## Detailed Tool Documentation:
+> [https://docs.kurukshetra.io](https://docs.kurukshetra.io)
+
 ## Installation
 
 ### Supported Platforms

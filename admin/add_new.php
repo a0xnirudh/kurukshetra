@@ -31,6 +31,7 @@ if (isset($_POST) && $_POST != array()) {
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="shortcut icon" type="image/png" href="/staticfiles/img/favicon.png"/>
     <title>Kurukshetra</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <link rel="stylesheet" href="/staticfiles/css/base.css">
