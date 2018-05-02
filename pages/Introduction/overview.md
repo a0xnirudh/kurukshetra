@@ -38,10 +38,10 @@ Awesome people who built this project:
 
 ##### Lead Developers:
 
-Anirudh Anand ([@a0xnirudh](https://twitter.com/a0xnirudh))
+Anirudh Anand ([@a0xnirudh](https://twitter.com/a0xnirudh))  
+Mohan KK ([@MohanKallepalli](https://twitter.com/MohanKallepalli))
 
 ##### Project Contributors:
-
-Mohan KK ([@MohanKallepalli](https://twitter.com/MohanKallepalli))  
+  
 Ankur Bhargava ([@_AnkurB](https://twitter.com/_AnkurB))  
 Prajal Kulkarni ([@prajalkulkarni](https://twitter.com/prajalkulkarni))
