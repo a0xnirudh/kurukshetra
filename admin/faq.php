@@ -107,12 +107,6 @@ if (isset($_POST) && $_POST != []) {
                     Users
                 </a>
             </li>
-            <li>
-                <a href="hints.php">
-                    <i class="glyphicon glyphicon-link"></i>
-                    HINTS
-                </a>
-            </li>
             <li class="active">
                 <a href="#">
                     <i class="glyphicon glyphicon-screenshot"></i>

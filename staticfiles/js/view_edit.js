@@ -89,6 +89,7 @@ window.show_chall = {
         $("#chall_intro").text(row.introduction);
         $("#chall_instr").text(row.instructions);
         $("#chall_ref").text(row.reference);
+        $("#chall_hints").text(row.hints);
     }
 };
 

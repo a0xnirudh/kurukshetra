@@ -91,30 +91,6 @@ function get_challenges()
     return $result;
 }
 
-
-/**
- * Get the list of hints for the challenge - get_hints()
- *
- * Returns a list of challenges based on the category.
- *
- * @return bool|mysqli_result
- */
-function get_hints($id)
-{
-    global $conn;
-    $query = "SELECT hint_text from hints where challenge_id=? and enabled = 1";
-    $stmt = $conn->prepare($query);
-    $stmt->bind_param("s",$id);
-    $stmt->execute();
-    $stmt->bind_result($hint);
-    $hints = array();
-    while($stmt->fetch())
-    {
-        array_push($hints,$hint);
-    }
-    return $hints;
-}
-
 /**
  * Get the list of difficulties - get_difficulties()
  *
@@ -283,17 +259,17 @@ function update_challenge($data, $files){
 
     $id = $data['id'];
     $name = $data['name'];
-
+    
     if (isset($files['code']) && $files['code']['tmp_name'] != "") {
         $code = base64_encode(file_get_contents($files['code']['tmp_name']));
     } else {
-        $code = "";
+        $code = base64_encode($data['disabled_code']);
     }
 
     if (isset($files['unittests']) && $files['unittests']['tmp_name'] != "") {
         $unittests = base64_encode(file_get_contents($files['unittests']['tmp_name']));
     } else {
-        $unittests = "";
+        $unittests = base64_encode($data['disabled_unittests']);
     }
 
     $intro = $data['intro'];
@@ -552,7 +528,7 @@ function show_challenge($id, $challenge){
                     <!-- Default dropdown difficulty -->
                     <label for="difficulty" class="grey-text">Challenge Difficulty</label>
                     <select class="form-control" id="difficulty" name="difficulty">
-                        <?php
+                    <?php
                         $difficulties = get_difficulties();
                         foreach($difficulties as $difficulty)
                         {
@@ -565,29 +541,30 @@ function show_challenge($id, $challenge){
                             $option = $option. '>'.strtoupper($difficulty).'</option>';
                             echo $option;
                         }
-                        ?>
+                    ?>
                     </select>
 
                     <br>
                     <!-- Default textarea code -->
                     <label for="code" class="grey-text">Upload Challenge Code*</label>
-                    <!-- <textarea type="text" id="code" name="code" class="form-control" rows="4"></textarea> -->
-                    <input type="file" class="form-control-file" id="code" name="code" required>
-
-
+                    <textarea type="text" id="disabled_code" name="disabled_code" readonly class="form-control" rows="4"><?php
+                        echo base64_decode($challenge['code']);
+                    ?></textarea>
+                    <input type="file" class="form-control-file" id="code" name="code">
                     <br>
                     <!-- Default textarea code -->
                     <label for="unittests" class="grey-text">Upload Unit Tests*</label>
-                    <!-- <textarea type="text" id="unittests" name="unittests" class="form-control" rows="4"></textarea> -->
-                    <input type="file" class="form-control-file" id="unittests" name="unittests" required>
+                    <textarea type="text" id="disabled_unittests" name="disabled_unittests" readonly class="form-control" rows="4"><?php
+                        echo base64_decode($challenge['code']);
+                    ?></textarea>
+                    <input type="file" class="form-control-file" id="unittests" name="unittests">
 
                     <br>
                     <!-- Default textarea introduction -->
                     <label for="intro" class="grey-text">Challenge Introduction*</label>
                     <textarea type="text" id="intro" name="intro" class="form-control" rows="4"><?php
                         echo $challenge['intro'];
-                        ?>
-            </textarea>
+                    ?></textarea>
 
                     <br>
 
@@ -595,18 +572,19 @@ function show_challenge($id, $challenge){
                     <label for="instructions" class="grey-text">Challenge Instructions</label>
                     <textarea type="text" id="instructions" name="instructions" class="form-control" rows="4"><?php
                         echo $challenge['instructions'];
-                        ?>
-            </textarea>
-
+                    ?></textarea>
                     <br>
-
-
+                    <!-- Default textarea references -->
+                    <label for="hints" class="grey-text">Challenge Hints</label>
+                    <textarea type="text" id="hints" name="hints" class="form-control" rows="4"><?php
+                        echo $challenge['hints'];
+                    ?></textarea>
+                    <br>
                     <!-- Default textarea references -->
                     <label for="references" class="grey-text">Challenge References</label>
                     <textarea type="text" id="references" name="references" class="form-control" rows="4"><?php
                         echo $challenge['reference'];
-                        ?>
-            </textarea>
+                    ?></textarea>
 
                     <br>
                     <input type="hidden" id="id" name="id" value="<?php echo $id; ?>">

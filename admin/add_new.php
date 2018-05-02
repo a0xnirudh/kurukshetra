@@ -69,12 +69,6 @@ if (isset($_POST) && $_POST != array()) {
                 </a>
             </li>
             <li>
-                <a href="hints.php">
-                    <i class="glyphicon glyphicon-link"></i>
-                    HINTS
-                </a>
-            </li>
-            <li>
                 <a href="faq.php">
                     <i class="glyphicon glyphicon-screenshot"></i>
                     FAQ
@@ -179,6 +173,9 @@ if (isset($_POST) && $_POST != array()) {
                             <br>
                             <label for="references" class="grey-text">Challenge References</label>
                             <textarea type="text" id="references" name="references" class="form-control" rows="4"></textarea>
+                            <br>
+                            <label for="references" class="grey-text">Challenge Hints</label>
+                            <textarea type="text" id="hints" name="hints" class="form-control" rows="4"></textarea>
                             <br>
                             <div class="text-center mt-4">
                                 <br /><p><button class="btn btn-info" type="submit">Send<i class="fa fa-paper-plane-o ml-2"></i></button></p>

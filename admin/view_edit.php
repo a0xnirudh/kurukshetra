@@ -97,12 +97,6 @@ if (isset($_REQUEST['id'])) {
                 </a>
             </li>
             <li>
-                <a href="hints.php">
-                    <i class="glyphicon glyphicon-link"></i>
-                    HINTS
-                </a>
-            </li>
-            <li>
                 <a href="faq.php">
                     <i class="glyphicon glyphicon-screenshot"></i>
                     FAQ
@@ -145,8 +139,7 @@ if (isset($_REQUEST['id'])) {
             <?php
             print_message($error, $msg);
             if (isset($_POST) && $_POST != []) {
-                $post = array_map('htmlspecialchars', $_POST);
-                list($error, $msg) = update_challenge($post, $_FILES);
+                list($error, $msg) = update_challenge($_POST, $_FILES);
                 print_message($error, $msg);
             }
 
@@ -180,6 +173,9 @@ if (isset($_REQUEST['id'])) {
                                     </tr>
                                     <tr>
                                         <td>References</td><td id="chall_ref"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Hints</td><td id="chall_hints"></td>
                                     </tr>
                                     <tr>
                                         <td>Code</td><td id="chall_code"></td>

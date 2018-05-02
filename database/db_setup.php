@@ -140,8 +140,9 @@ $query = "CREATE TABLE `challenges` (
   `type` varchar(8) COLLATE utf8_unicode_ci NOT NULL,
   `language` varchar(8) COLLATE utf8_unicode_ci NOT NULL,
   `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `hints` text COLLATE utf8_unicode_ci,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+) ENGINE=InnoDB AUTO_INCREMENT=36 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
 
 if (mysqli_query($conn, $query)) {
         echo "[+] Created new table challenges. \n";

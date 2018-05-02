@@ -82,12 +82,6 @@ check_admin();
                 </a>
             </li>
             <li>
-                <a href="hints.php">
-                    <i class="glyphicon glyphicon-link"></i>
-                    HINTS
-                </a>
-            </li>
-            <li>
                 <a href="faq.php">
                     <i class="glyphicon glyphicon-screenshot"></i>
                     FAQ

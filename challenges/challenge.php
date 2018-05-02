@@ -37,7 +37,7 @@ $id = intval($_GET['id']);
 //Get all the challenge details from DB
 $row = get_challenge($id);
 $instructions = $row['instructions'];
-$hints = get_hints($id);
+$hints = $row['hints'];
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -111,7 +111,7 @@ $hints = get_hints($id);
             <div class="hint-text">
                 <div class="font black">
                     <?php
-                        foreach ($hints as $hint) {
+                        foreach (explode("\n", $hints) as $hint) {
                             echo '<li>'.$hint.'</li>';
                         }
                     ?>
