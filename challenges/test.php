@@ -281,5 +281,5 @@ $docker -> prepare();
 $docker -> mysqlConnect();
 $docker -> createContainer();
 $docker -> execContainer();
-#$docker -> removeContainer();
-#$docker -> cleanup();
+$docker -> removeContainer();
+$docker -> cleanup();

@@ -1,21 +1,15 @@
 <?php
-
-require $_SERVER['DOCUMENT_ROOT'].'/includes/core.php';
-
 if (file_exists('/var/config/.kurukshetra.ini')) {
-    if(!check_admin()){
-        $config = parse_ini_file('/var/config/.kurukshetra.ini');
-        if ($config !== []) {
-            header('Location: /login/');
-            die();
-        }
+    $config = parse_ini_file('/var/config/.kurukshetra.ini');
+    if ($config !== []) {
+        header('Location: /login/');
+        die();
     }
 } else {
     exec("touch /var/config/.kurukshetra.ini");
     exec("chmod -R 777 /var/config/.kurukshetra.ini");
 }
 ?>
-
 <!DOCTYPE html>
 <html>
 <head>

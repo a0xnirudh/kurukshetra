@@ -37,7 +37,6 @@ $id = intval($_GET['id']);
 //Get all the challenge details from DB
 $row = get_challenge($id);
 $instructions = $row['instructions'];
-$hints = $row['hints'];
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -56,7 +55,7 @@ $hints = $row['hints'];
 <nav class="nav" id="nav">
     <div class="container">
         <div class="header animated bounceInLeft">
-            <p class="nav-bar-name name"><img src="../staticfiles/img/small_logo.svg" height="75px" style="margin-top:-15px"> Kurukshetra</p>
+            <p class="nav-bar-name name"><img src="../staticfiles/img/small_logo.png" height="40px" style="margin-top:-15px"> Kurukshetra</p>
         </div>
 
         <!-- Edit the title below -->
@@ -111,11 +110,10 @@ $hints = $row['hints'];
             <div class="hint-text">
                 <div class="font black">
                     <?php
-                        foreach (explode("\n", $hints) as $hint) {
-                            echo '<li>'.$hint.'</li>';
-                        }
+                    foreach (explode("\n", $hints) as $hint) {
+                        echo '<li>'.$hint.'</li>';
+                    }
                     ?>
-                </div>
             </div>
         </div>
     </div>
