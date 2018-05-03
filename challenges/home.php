@@ -1,19 +1,20 @@
 <?php
 /**
- * Challenge listing page - index.php
+ * Challenge home - home.php
  *
  * PHP version 7.2
  *
- * All the uploaded challenges are listed here which includes the
- * category/language/type etc.
+ * Home page where charts based on type/severity/languages
+ * are shown to the user
  *
  * @category PHP
  * @package  Kurukshetra
  * @author   Anirudh Anand <a0xnirudh@gmail.com>
  * @license  Apache 2.0
  */
+
 require $_SERVER['DOCUMENT_ROOT'].'/includes/core.php';
-if (!check_login()) {//not logged in? redirect to login page
+if(!check_login()) {//not logged in? redirect to login page
     header('Location: /login/index.php');
 }
 ?>
@@ -31,8 +32,11 @@ if (!check_login()) {//not logged in? redirect to login page
     <!-- Bootstrap CSS CDN -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <!-- Our Custom CSS -->
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script src="https://code.highcharts.com/highcharts.js"></script>
     <link rel="stylesheet" href="/staticfiles/css/index.css">
     <link rel="stylesheet" href="/staticfiles/css/base.css">
+    <script src='/staticfiles/js/index.js'></script>
 </head>
 <body>
 <div class="wrapper">
@@ -46,27 +50,27 @@ if (!check_login()) {//not logged in? redirect to login page
         </div>
 
         <ul class="list-unstyled components">
-            <li>
+            <li class="active">
                 <a href="home.php">
                     <i class="glyphicon glyphicon-home"></i>
                     Home
                 </a>
             </li>
-            <li class="active">
+            <li>
                 <a href="index.php#homeSubmenu" data-toggle="collapse" aria-expanded="false">
                     <i class="glyphicon glyphicon-briefcase"></i>
                     Challenges
                 </a>
                 <ul class="collapse list-unstyled" id="homeSubmenu">
-                    <li id="challenge-all">
-                        <a href="#all" onclick="show_all()" class="glyphicon glyphicon-chevron-right">
+                    <li>
+                        <a href="index.php#all" onclick="show_all()" class="glyphicon glyphicon-chevron-right">
                             All
                         </a>
                     </li>
                     <?php
                     $categories = get_categories();
-                    foreach ($categories as $category){
-                        echo '<li id="challenge-'.strtolower($category['name']).'"><a class="glyphicon glyphicon-chevron-right" id="'.$category['id'].'" href="#" onclick="show_chall(\''.strtolower($category['name']).'\')"> '.$category['name'].'</a></li>';
+                    foreach ($categories as $category) {
+                        echo '<li id="challenge-'.strtolower($category['name']).'"><a class="glyphicon glyphicon-chevron-right" id="'.$category['id'].'" href="index.php#'.strtolower($category['name']).'" onclick="show_chall(\''.strtolower($category['name']).'\')"> '.$category['name'].'</a></li>';
                     }
                     ?>
                 </ul>
@@ -97,46 +101,33 @@ if (!check_login()) {//not logged in? redirect to login page
         <nav class="navbar navbar-default">
             <div class="container-fluid">
                 <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                    <span id="challenge-type-head" class="title">All Challenges</span>
-                    <div class="btn-group pull-right" id="easy-med-hard-btn" role="group">
-                        Welcome <span class="title"><?php welcome_message(); ?> </span></br></br>
-                        <?php
-                        $difficulties = get_difficulties();
-                        foreach ($difficulties as $difficulty) {
-                            $difficulty = $difficulty['name'];
-                            echo '<button type="button" class="btn btn-default '.strtolower($difficulty).'" id="'.strtolower($difficulty).'" onclick="show_chall(\''.strtolower($difficulty).'\')">'.$difficulty.'</button>';
-                        }
-                        ?>
+                    <span id="challenge-type-head" class="title">Kurukshetra Dashboard</span>
+                    <div class="pull-right">
+                        Welcome <span class="title"><?php welcome_message(); ?> </span>
                     </div>
                 </div>
             </div>
         </nav>
         <div id="page_content">
             <div class="col-md-12 challenge-list">
-                <?php
-                $result = get_challenges();
-                foreach ($result as $row) {
-
-                    echo '<div class="challenge-box '.$row['type'].' '.$row['difficulty'].'">
-                                <br>
-                                <a id="'.$row['name'].'" class="challenge-title" href="challenge.php?id='.$row['id'].'">'.$row['name'].'</a>
-                                <p class="challenge-description">
-                                    '.$row['intro'].'
-                                </p>
-                                <p class="challenge-type">Language : <span style="color:#535353">' . $row['language'] . '</span></p>
-                                <p class="challenge-type">Type : <span style="color:#535353">' . $row['type'] . '</span></p>
-                                <p class="challenge-type">Difficulty : <span class="difficulty-'.$row['difficulty'].' '.$row['difficulty'].'">' . $row['difficulty'] . '</span></p>
-                                <div class="button-style">
-                                    <button onclick="window.open(\'challenge.php?id=' . $row['id'] . '\', \'_blank\');" class="solve-challenge-btn btn btn-primary">Solve Challenge</button>
-                                </div></div>';
-                }
-                ?>
+                <div class="container-fluid bg-4 text-center">
+                    <div class="row no-gutter">
+                        <div class="columns col-sm-4">
+                            <div id="container" style="min-width: 310px; height: 300px; max-width: 600px; margin: 0 auto"></div>
+                        </div>
+                        <div class="columns col-sm-4">
+                            <div id="container2" style="min-width: 310px; height: 300px; max-width: 600px; margin: 0 auto"></div>
+                        </div>
+                        <div class="columns col-sm-4">
+                            <div id="container3" style="min-width: 310px; height: 300px; max-width: 600px; margin: 0 auto"></div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
+        <div class="line"></div>
     </div>
 </div>
-<!-- jQuery CDN -->
-<script src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
 <!-- Bootstrap Js CDN -->
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
@@ -145,25 +136,13 @@ if (!check_login()) {//not logged in? redirect to login page
         $('#sidebarCollapse').on('click', function () {
             $('#sidebar').toggleClass('active');
         });
-
-        hash = location.hash.substr(1);
-        if (hash == 'all' || hash == "")
-            show_all();
-        else
-            show_chall(hash);
     });
 </script>
 <script>
     function show_chall(class_name){
+        console.log('.'+class_name);
         $('.challenge-box').hide();
         $('.'+class_name).show();
-        class_name = class_name.toUpperCase();
-        $('#challenge-type-head').text(class_name+" Challenges");
-    }
-
-    function show_all(){
-        $('.challenge-box').show();
-        $('#challenge-type-head').text('All Challenges');
     }
 </script>
 <script type="text/javascript">
