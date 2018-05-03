@@ -261,6 +261,10 @@ class Docker extends UnitTest
             }
         }
 
+        if ($output == "") {
+            $output = "Congratulations ! You have successfully completed the challenge.";
+        }
+
         echo "Output: \n\n" . $output;
         return;
 
