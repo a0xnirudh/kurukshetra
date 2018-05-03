@@ -17,3 +17,9 @@ RUN wget https://phar.phpunit.de/phpunit-7.1.4.phar --no-check-certificate
 RUN chmod +x phpunit-7.1.4.phar
 
 RUN mv phpunit-7.1.4.phar /usr/local/bin/phpunit
+
+RUN useradd -ms /bin/bash kurukshetra -G www-data
+
+RUN chgrp www-data /var/www/html
+
+RUN chmod g+rwx  /var/www/html

@@ -210,6 +210,7 @@ class Docker extends UnitTest
         $params = (object) [
             "Cmd" => ["tail", "-f", "/dev/null"],
             "Image" => "kurukshetra",
+            "User" => "kurukshetra",
             "HostConfig" => ["Binds" => [__DIR__ . "/uploads/" . $this->folder . ":/var/www/html:ro"]]
         ];
 
@@ -237,6 +238,7 @@ class Docker extends UnitTest
             "AttachStdin" => false,
             "AttachStdout" => true,
             "AttachStderr" => true,
+            "User" => "kurukshetra",
             "Tty" => false,
             "Cmd" => ["phpunit", "/var/www/html/unittest.php"]
         ];

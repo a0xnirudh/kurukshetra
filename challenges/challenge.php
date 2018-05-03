@@ -47,6 +47,7 @@ $instructions = $row['instructions'];
     <link rel="stylesheet" href="../staticfiles/css/font-awesome.min.css">
     <link rel="stylesheet" href="../staticfiles/css/style.css">
     <link rel="stylesheet" href="../staticfiles/css/jquery-ui.css" />
+    <link rel="shortcut icon" type="image/png" href="/staticfiles/img/favicon.png"/>
     <script src="/staticfiles/js/jquery-2.1.3.js"></script>
     <script src="/staticfiles/js/jquery-ui.js"></script>
     <link href='https://fonts.googleapis.com/css?family=Josefin+Sans|Bree+Serif|Righteous' rel='stylesheet' type='text/css'>
@@ -140,7 +141,7 @@ $instructions = $row['instructions'];
 
         <!-- Change the code below -->
 
-        <div id="editor"> <?php echo htmlspecialchars(base64_decode($row['code'])); ?></div>
+        <div id="editor"><?php echo htmlspecialchars(base64_decode($row['code'])); ?></div>
 
 
         <!-- End of editor code -->
