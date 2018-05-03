@@ -771,4 +771,14 @@ function get_challenge_id($name,$code,$intro,$instructions,$references,$difficul
     return $id;
 }
 
+function get_admin_email(){
+    global $conn;
+    $query = "select email from users limit 1";
+    $stmt = $conn->prepare($query);
+    $stmt->execute();
+    $stmt->bind_result($email);
+    $stmt->fetch();
+    return $email;
+}
+
 ?>

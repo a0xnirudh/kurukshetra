@@ -76,7 +76,7 @@ if (isset($_POST) && $_POST != array()) {
                 </a>
             </li>
             <li>
-                <a href="mailto:security@flipkart.com">
+                <a href="mailto:<?php echo get_admin_email(); ?>">
                     <i class="glyphicon glyphicon-send"></i>
                     Contact
                 </a>
