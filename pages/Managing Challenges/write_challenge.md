@@ -64,7 +64,7 @@ $current_path = realpath(dirname(__FILE__));
 try {
     require_once($current_path . '/src.php');
 }
-catch (Exception as $e) {
+catch (Exception $e) {
     echo 'INFO: ' .$e->getMessage();
 }
 
