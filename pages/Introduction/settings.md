@@ -57,7 +57,7 @@ Enabling Docker [Remote API](https://success.docker.com/article/how-do-i-enable-
 # Add the following lines to **/etc/systemd/system/docker.service.d/override.conf**
 [Service]
 ExecStart=
-ExecStart=/usr/bin/dockerd -H fd:// -H tcp://0.0.0.0:2376
+ExecStart=/usr/bin/dockerd -H fd:// -H tcp://127.0.0.1:2376
 ```
 
 Read the [official installation](https://docs.docker.com/install/){:target="_blank"} guide for installing on other distributions.

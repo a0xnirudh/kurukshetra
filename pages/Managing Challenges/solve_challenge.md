@@ -36,7 +36,7 @@ The vulnerability in the above code is that the user input is getting reflected 
 
 In order to solve the above challenge, we should fix the vulnerability but the functionality itself shouldn't be changed. So we should patch the challenge in such a way that functionality is retained but vulnerability is patched.
 
-From the [official PHP documentation](http://php.net/manual/en/function.htmlspecialchars.php){:target="_blank"}, it's documented that in order for the htmlspecialchars() to encode single quotes, an argument namely **`ENT_QUOTES``** should be passed on to the function.
+From the [official PHP documentation](http://php.net/manual/en/function.htmlspecialchars.php){:target="_blank"}, it's documented that in order for the htmlspecialchars() to encode single quotes, an argument namely **`ENT_QUOTES`** should be passed on to the function.
 
 So we can patch the vulnerability by updating the challenge code to include the function argument and submit it back to the framework.
 

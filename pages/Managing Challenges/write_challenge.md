@@ -61,13 +61,19 @@ When writing unittests, always starts with the following (you can copy paste the
 <?php
 use PHPUnit\Framework\TestCase;
 $current_path = realpath(dirname(__FILE__));
-require_once($current_path . '/src.php');
+try {
+    require_once($current_path . '/src.php');
+}
+catch (Exception as $e) {
+    echo 'INFO: ' .$e->getMessage();
+}
 
 ```
 Here we use phpunit and $current_path has the current path value and it loads the src.php file from the current path or from the same directory in which unittest is present inside the docker. This is automatically taken care by the framework but make sure to always use the filename `src.php` while writing the unittest (or you can copy-paste the above code and start writing). 
 
-{% include important.html content="
-**`require_once`** should always try to include the file **`src.php`** and the name should not be changed while writing the unittests. If changed, the unittest will fail to work properly.
+{% include important.html content="<br/><br/>
+1. **require_once** should always try to include the file **`src.php`** and the name should not be changed while writing the unittests. If changed, the unittest will fail to work properly.<br/><br/>
+2. Exception handling is required so that in case the **`src.php`** fails to include, the message should be shown to the user as **INFO**.
 "%}
 
 Now lets define the test class and write the test cases for each functions. The name of the test class should be the original class name followed by the string **Test**. For example, the original class name which we are testing here is `TokenStorage` so the test class name should be `TokenStorageTest` (these are the rules of writing unittests using phpunit and not the limitation of the framework itself).
