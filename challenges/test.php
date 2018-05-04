@@ -251,6 +251,7 @@ class Docker extends UnitTest
         ];
         $output = $this->httpPost($this->url . "/exec/" . $exec["Id"] . "/start", json_encode($params));
         $temp = explode("\n", $output);
+        $error = "";
         $output = "";
         $count = 0;
 
@@ -259,9 +260,18 @@ class Docker extends UnitTest
                 $count++;
                 $output .= $count . ". " . explode("INFO: ", $out)[1] . "\n";
             }
+
+            if (strpos($out, 'Error:') !== false) {
+                $error .= explode("Error: ", $out)[1] . "\n";
+            }
         }
 
-        if ($output == "") {
+        if ($error !== "") {
+            echo "Error: \n\n" . $error;
+            return;
+        }
+
+        if ($output == "" && $error == "") {
             $output = "Congratulations ! You have successfully completed the challenge.";
         }
 
