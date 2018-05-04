@@ -1,4 +1,4 @@
-# Kurukshetra
+# Kurukshetra &nbsp; [![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/intent/tweet?text=Kurukshetra%20-%20A%20framework%20for%20teaching%20secure%20coding%20by%20means%20of%20interactive%20problem%20solving!&url=https://github.com/a0xnirudh/kurukshetra&via=a0xnirudh&hashtags=security,infosec,bugbounty,SecureCoding)
 
 <p align="center">
   <img src="/staticfiles/img/logo.png" alt="Kurukshetra"/>
@@ -7,7 +7,8 @@
 [![Github Release Version](https://img.shields.io/badge/release-V1.0-green.svg)](https://github.com/a0xnirudh/kurukshetra)
 [![Github Release Version](https://img.shields.io/badge/php-7.2-green.svg)](https://github.com/a0xnirudh/kurukshetra)
 [![License](https://img.shields.io/badge/License-GPL%20v3-green.svg)](https://github.com/a0xnirudh/kurukshetra/blob/master/LICENSE)
-[![RTA loves Open source](https://badges.frapsoft.com/os/v1/open-source.svg?v=103)](https://github.com/a0xnirudh/kurukshetra)
+[![Kurukshetra loves Open source](https://badges.frapsoft.com/os/v1/open-source.svg?v=103)](https://github.com/a0xnirudh/kurukshetra)
+[![Follow Kurukshetra on Twitter](https://img.shields.io/twitter/follow/kurukshetrahq.svg?style=social&label=Follow%20%40kurukshetra)](https://twitter.com/intent/user?screen_name=KurukshetraHQ "Follow Kurukshetra on Twitter")
 
 **Kurukshetra** is a web framework that’s developed with the aim of being the first open source framework which provides a solid foundation to host reasonably complex **secure coding** challenges while still providing the ability to efficiently and dynamically execute each challenge on the basis of user input in a secure sandboxed environment.
 
