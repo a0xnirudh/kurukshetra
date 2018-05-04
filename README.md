@@ -78,6 +78,39 @@ The following are couple of ideas which we have in mind to do going ahead with K
 
 * Gamification of the whole framework by introducing scorebard based on challenge solving points (predefined points are already available for challenges based on difficulties).
 
+## Screenshots
+
+1. Challenge listing page:
+
+<p align="center">
+  <img src="/staticfiles/img/challenge_listing.png" alt="Kurukshetra"/>
+</p>
+
+2. Challenge solving page:
+
+<p align="center">
+  <img src="/staticfiles/img/challenge_solving.png" alt="Kurukshetra"/>
+</p>
+
+3. Admin portal (statictics):
+
+<p align="center">
+  <img src="/staticfiles/img/admin_dashboard.png" alt="Kurukshetra"/>
+</p>
+
+4. Admin challenge edit/add challenges:
+
+<p align="center">
+  <img src="/staticfiles/img/admin_challenge_page.png" alt="Kurukshetra"/>
+</p>
+
+
+## Video demo (Admin Functionalities)
+
+<div align="center">
+  <a href="https://www.youtube.com/watch?v=yrfmyz3p9a4" target="_blank"><img src="/staticfiles/img/video_thumbnail.png" alt="Kurukshetra Admin functionalities"></a>
+</div>
+
 
 ## Contributors
 
@@ -90,5 +123,7 @@ Mohan KK ([@MohanKallepalli](https://twitter.com/MohanKallepalli))
 
 ##### Project Contributors:
 
+Arjun T U ([@arjunkikz](https://twitter.com/arjunkikz))  
+Durga Subramanian ([@0xdug](https://twitter.com/0xdug))  
 Ankur Bhargava ([@_AnkurB](https://twitter.com/_AnkurB))  
 Prajal Kulkarni ([@prajalkulkarni](https://twitter.com/prajalkulkarni))  
