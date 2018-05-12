@@ -194,6 +194,21 @@ class UnitTest extends Http
                 fclose($fh);
             }
 
+            elseif ($language == 'ruby') {
+                // Write the user submitted code into a python file
+                mkdir(__DIR__ . "/uploads/" . $this->folder);
+                $fh = fopen(__DIR__ . "/uploads/" . $this->folder . "/src.rb", 'w+');
+
+                $stringData = base64_decode(str_replace(" ", "+", $_POST['function']));
+                fwrite($fh, $stringData);
+                fclose($fh);
+
+                // Write the corresponding unittest into a python file
+                $fh = fopen("uploads/" . $this->folder . "/test.rb", 'w+');
+                fwrite($fh, base64_decode($this->unittest));
+                fclose($fh);
+            }
+
         }
     }
 
@@ -418,6 +433,57 @@ class Docker extends UnitTest
             } elseif ($error !== "") {
                 echo "Error: \n\n" . $error;
                 return;
+            }
+
+            if ($output == "" && $error == "") {
+                $output = "Congratulations ! You have successfully completed the challenge.";
+            }
+
+            echo "Output: \n\n" . $output;
+            return;
+
+        } elseif ($language == 'ruby') {
+            $params = (object)[
+                "AttachStdin" => false,
+                "AttachStdout" => true,
+                "AttachStderr" => true,
+                "Tty" => false,
+                "Cmd" => ["ruby", "test.rb"]
+            ];
+            $exec = json_decode($this->httpPost($this->url . "/containers/" . $this->container_id . "/exec", json_encode($params)), true);
+
+            // Running the exec
+            $params = (object)[
+                "Detach" => false,
+                "Tty" => false
+            ];
+            $output = $this->httpPost($this->url . "/exec/" . $exec["Id"] . "/start", json_encode($params));
+            $temp = explode("\n", $output);
+            $error = "";
+            $output = "";
+            $count = 0;
+            $rubyErrors = ['syntax error', 'undefined method'];
+
+            foreach ($temp as $out) {
+                foreach ($rubyErrors as $err) {
+                    if (strpos($out, $err) !== false) {
+                        $error .= explode($err, $out)[1] . "\n";
+                        echo "Error: \n\n" . $err . $error;
+                        return;
+                    }
+                }
+            }
+
+
+            foreach ($temp as $out) {
+                if (stripos($out, 'INFO:') !== false) {
+                    $count++;
+                    $output .= $count . ". " . explode("INFO: ", $out)[1] . "\n";
+                    if (strlen($output > 0)) {
+                        echo "Output: \n\n" . $output;
+                        return;
+                    }
+                }
             }
 
             if ($output == "" && $error == "") {

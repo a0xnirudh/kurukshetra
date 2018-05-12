@@ -203,9 +203,23 @@ $date = date("Y-m-d H:i:s");
 
 $query3 = "INSERT INTO challenges (name, code, intro, instructions, reference, type, language, difficulty, timestamp) VALUES ('$name','$code','$intro','$instruction','$reference', 'xss', 'nodejs', 'medium', '$date')";
 
+
+$name = s("RubyXSS");
+$code = 'cmVxdWlyZSAnc2luYXRyYScKCnNldCA6YmluZCwgJzAuMC4wLjAnCnNldCA6cG9ydCwgNDAwMAoK
+YmVmb3JlIGRvCiAgICBjb250ZW50X3R5cGUgJ3RleHQvaHRtbCcKZW5kCgpnZXQgJy8nIGRvCiAg
+ICAnSGVsbG8gV29ybGQnCmVuZAoKZ2V0ICcvOm5hbWUnIGRvCiAgICAnSGVsbG8gJyArIHBhcmFt
+c1s6bmFtZV0KZW5kCg==';
+$intro = s("Cross-site Scripting (XSS) refers to client-side code injection attack wherein an attacker can execute malicious scripts (also commonly referred to as a malicious payload) into a legitimate website or web application. XSS is amongst the most rampant of web application vulnerabilities and occurs when a web application makes use of unvalidated or unencoded user input within the output it generates.");
+$instruction = s("Modify and submit the update code by patching the vulnerability but should retain the functionality of the existing code.");
+$reference = s("These are sample reference links !!");
+$date = date("Y-m-d H:i:s");
+
+$query4 = "INSERT INTO challenges (name, code, intro, instructions, reference, type, language, difficulty, timestamp) VALUES ('$name','$code','$intro','$instruction','$reference', 'xss', 'ruby', 'easy', '$date')";
+
 if (mysqli_query($conn, $query)) {
     if (mysqli_query($conn, $query2)) {
         mysqli_query($conn, $query3);
+        mysqli_query($conn, $query4);
         echo "[+] Inserted dummy value to challenges. \n";
         echo "<br><br>\n";
     }
@@ -232,7 +246,7 @@ if (mysqli_query($conn, $query)) {
         echo "<br><br>\n";
 }
 
-$query = "INSERT INTO `languages` (`name`) VALUES ('php'), ('python'), ('nodejs')";
+$query = "INSERT INTO `languages` (`name`) VALUES ('php'), ('python'), ('nodejs'), ('ruby')";
 
 if (mysqli_query($conn, $query)) {
         echo "[+] Inserted dummy value to languages. \n";
@@ -366,7 +380,24 @@ Rk86IFBhdGggLzpuYW1lIGlzIHZ1bG5lcmFibGUgdG8gWFNTISI7CiAgICAgICAgICAgICAgICBy
 ZXR1cm4gZG9uZShlcnJvcik7CiAgICAgICAgICAgIH0KICAgICAgICAgICAgZG9uZSgpOwogICAg
 ICAgIH0pOwoKICAgIH0pOwoKCn0pOwo=';
 
-$query = "INSERT INTO unittests (challenge_id, unittest) VALUES ('1', '".$unittest1."'), ('2', '".$unittest2."'), ('3', '".$unittest3."')";
+$unittest4 = 'RU5WWydSQUNLX0VOViddID0gJ3Rlc3QnCgpyZXF1aXJlICd1cmknIApyZXF1aXJlICdtaW5pdGVz
+dC9hdXRvcnVuJwpyZXF1aXJlICdyYWNrL3Rlc3QnCnJlcXVpcmUgJ3NlY3VyZXJhbmRvbScKcmVx
+dWlyZSAndGVzdC91bml0JwpyZXF1aXJlX3JlbGF0aXZlICcuL3NyYycKIApjbGFzcyBNYWluQXBw
+VGVzdCA8IFRlc3Q6OlVuaXQ6OlRlc3RDYXNlCiAgaW5jbHVkZSBSYWNrOjpUZXN0OjpNZXRob2Rz
+IAogCiAgZGVmIGFwcAogICAgU2luYXRyYTo6QXBwbGljYXRpb24KICBlbmQKIAogIGRlZiB0ZXN0
+X21haW5fcGFnZQogICAgZ2V0ICcvJwogICAgYXNzZXJ0X2VxdWFsKGxhc3RfcmVzcG9uc2UuYm9k
+eSwgJ0hlbGxvIFdvcmxkJywgIklORk86IFBhdGggJy8nIGlzIG5vdCB3b3JraW5nIHByb3Blcmx5
+LiIpCiAgZW5kCgoKICBkZWYgdGVzdF9wYXJhbQogICAgcmFuZG9tX3N0cmluZyA9IFNlY3VyZVJh
+bmRvbS5oZXgKICAgIGdldCAnLycgKyByYW5kb21fc3RyaW5nCiAgICBhc3NlcnQgbGFzdF9yZXNw
+b25zZS5vaz8KICAgIGFzc2VydF9lcXVhbChsYXN0X3Jlc3BvbnNlLmJvZHksICdIZWxsbyAnICsg
+cmFuZG9tX3N0cmluZywgJ0lORk86IFBhdGggLzpuYW1lIGlzIG5vdCB3b3JraW5nIHByb3Blcmx5
+JykKICBlbmQKCgogIGRlZiB0ZXN0X3hzcwogICAgeHNzID0gJzxzdmclMjBvbmxvYWQ9YWxlcnQo
+NSk+JwogICAgZ2V0ICcvJyArIFVSSTo6ZW5jb2RlKHhzcykKICAgIGFzc2VydCBsYXN0X3Jlc3Bv
+bnNlLm9rPwogICAgYXNzZXJ0X25vdF9lcXVhbChsYXN0X3Jlc3BvbnNlLmJvZHksICdIZWxsbyAn
+ICsgeHNzLCAnSU5GTzogUGF0aCAvOm5hbWUgaXMgdnVsbmVyYWJsZSB0byBYU1MnKQogIGVuZAoK
+ZW5kCg==';
+
+$query = "INSERT INTO unittests (challenge_id, unittest) VALUES ('1', '".$unittest1."'), ('2', '".$unittest2."'), ('3', '".$unittest3."'), ('4', '".$unittest4."')";
 
 if (mysqli_query($conn, $query)) {
         echo "[+] Inserted data new table unittests. \n";

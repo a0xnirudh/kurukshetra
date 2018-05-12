@@ -37,3 +37,9 @@ WORKDIR /var/www/html
 RUN npm install express body-parser htmlencode html-entities chai chai-http randomstring mocha superagent -g
 
 RUN ln -s /usr/bin/nodejs /usr/bin/node
+
+# Installing Ruby requirements
+
+RUN apt-get update && apt-get -y install ruby-dev
+
+RUN gem install rack-test minitest sinatra htmlentities cgi --no-ri --no-rdoc
