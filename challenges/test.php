@@ -179,6 +179,21 @@ class UnitTest extends Http
                 fclose($fh);
             }
 
+            elseif ($language == 'nodejs') {
+                // Write the user submitted code into a python file
+                mkdir(__DIR__ . "/uploads/" . $this->folder);
+                $fh = fopen(__DIR__ . "/uploads/" . $this->folder . "/src.js", 'w+');
+
+                $stringData = base64_decode(str_replace(" ", "+", $_POST['function']));
+                fwrite($fh, $stringData);
+                fclose($fh);
+
+                // Write the corresponding unittest into a python file
+                $fh = fopen("uploads/" . $this->folder . "/test.js", 'w+');
+                fwrite($fh, base64_decode($this->unittest));
+                fclose($fh);
+            }
+
         }
     }
 
@@ -232,6 +247,8 @@ class Docker extends UnitTest
             "Cmd" => ["tail", "-f", "/dev/null"],
             "Image" => "kurukshetra",
             "User" => "kurukshetra",
+            "WorkingDir" => "/var/www/html",
+            "Env" => ["NODE_PATH=/usr/local/lib/node_modules"],
             "HostConfig" => ["Binds" => [__DIR__ . "/uploads/" . $this->folder . ":/var/www/html:ro"]]
         ];
 
@@ -323,10 +340,64 @@ class Docker extends UnitTest
             $error = "";
             $output = "";
             $count = 0;
-            $pythonErrors = ['NameError:', 'ImportError:'];
+            $pythonErrors = ['NameError:', 'ImportError:', 'KeyError:'];
 
             foreach ($temp as $out) {
                 foreach ($pythonErrors as $err) {
+                    if (strpos($out, $err) !== false) {
+                        $error .= explode($err, $out)[1] . "\n";
+                        echo "Error: \n\n" . $err . $error;
+                        return;
+                    }
+                }
+
+                if (strpos($out, 'AssertionError:') !== false) {
+                    $count++;
+                    $error .= explode("AssertionError: ", $out)[1] . "\n";
+                    $output .= $count . ". " . explode("INFO: ", $out)[1] . "\n";
+                }
+            }
+
+            if ($output !== "") {
+                echo "Output: \n\n" . $output;
+                return;
+            } elseif ($error !== "") {
+                echo "Error: \n\n" . $error;
+                return;
+            }
+
+            if ($output == "" && $error == "") {
+                $output = "Congratulations ! You have successfully completed the challenge.";
+            }
+
+            echo "Output: \n\n" . $output;
+            return;
+        } elseif ($language == 'nodejs') {
+            $params = (object)[
+                "AttachStdin" => false,
+                "AttachStdout" => true,
+                "AttachStderr" => true,
+                "User" => "kurukshetra",
+                "Tty" => false,
+                "Cmd" => ["mocha", '--exit']
+            ];
+            $exec = json_decode($this->httpPost($this->url . "/containers/" . $this->container_id . "/exec", json_encode($params)), true);
+
+            // Running the exec
+            $params = (object)[
+                "Detach" => false,
+                "Tty" => false
+            ];
+            $output = $this->httpPost($this->url . "/exec/" . $exec["Id"] . "/start", json_encode($params));
+            //echo $output;
+            $temp = explode("\n", $output);
+            $error = "";
+            $output = "";
+            $count = 0;
+            $nodeErrors = ['ReferenceError:', 'TypeError:'];
+
+            foreach ($temp as $out) {
+                foreach ($nodeErrors as $err) {
                     if (strpos($out, $err) !== false) {
                         $error .= explode($err, $out)[1] . "\n";
                         echo "Error: \n\n" . $err . $error;

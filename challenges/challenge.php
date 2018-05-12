@@ -114,6 +114,9 @@ $instructions = $row['instructions'];
                     foreach (explode("\n", $hints) as $hint) {
                         echo '<li>'.htmlspecialchars($hint).'</li>';
                     }
+                    if ($row['language'] == 'nodejs') {
+                        $row['language'] = 'javascript';
+                    }
                     ?>
             </div>
         </div>

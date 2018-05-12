@@ -4,7 +4,7 @@ CMD ["/sbin/my_init"]
 
 RUN rm -rf /var/lib/apt/lists/* && apt-get clean
 
-RUN export LANG=C.UTF-8 && add-apt-repository -y ppa:ondrej/php && apt-get update && apt-get install -y apache2 php7.2 php7.2-mbstring wget python3-pip
+RUN export LANG=C.UTF-8 && add-apt-repository -y ppa:ondrej/php && apt-get update && apt-get install -y apache2 php7.2 php7.2-mbstring wget python3-pip nodejs npm
 
 RUN mkdir /etc/service/apache2
 
@@ -29,3 +29,11 @@ RUN chmod g+rwx  /var/www/html
 # Installing python requirements
 
 RUN pip3 install flask
+
+# Installing NodeJs requirements
+
+WORKDIR /var/www/html
+
+RUN npm install express body-parser htmlencode html-entities chai chai-http randomstring mocha superagent -g
+
+RUN ln -s /usr/bin/nodejs /usr/bin/node

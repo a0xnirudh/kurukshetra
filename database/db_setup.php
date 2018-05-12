@@ -164,29 +164,48 @@ $instruction = s("This space contains the sample instruction.");
 $reference = s("These are sample reference links !!");
 $date = date("Y-m-d H:i:s");
 
-$query = "INSERT INTO challenges (name, code, intro, instructions, reference, type, language, timestamp) VALUES ('$name','$code','$intro','$instruction','$reference', 'xss', 'php', '$date')";
+$query = "INSERT INTO challenges (name, code, intro, instructions, reference, type, language, difficulty, timestamp) VALUES ('$name','$code','$intro','$instruction','$reference', 'xss', 'php','easy', '$date')";
 
 $name = s("Python - Rendering is fun !");
 $code = 'ZnJvbSBmbGFzayBpbXBvcnQgRmxhc2sKZnJvbSBmbGFzayBpbXBvcnQgcmVxdWVzdApmcm9tIGZs
 YXNrIGltcG9ydCBSZXNwb25zZQpmcm9tIGZsYXNrIGltcG9ydCByZW5kZXJfdGVtcGxhdGVfc3Ry
 aW5nCgoKYXBwID0gRmxhc2soX19uYW1lX18pCmRhdGEgPSB7fQoKQGFwcC5yb3V0ZSgnLycpCmRl
 ZiBoZWxsbygpOgogICAgcmV0dXJuIFJlc3BvbnNlKCJIZWxsbyBXb3JsZCEiLCBtaW1ldHlwZT0n
-dGV4dC9odG1sJykKCkBhcHAucm91dGUoJy88bmFtZT4nKQpkZWYgaGVsbG9fbmFtZShuYW1lLCBz
-dHJpbmc9Tm9uZSk6CiAgICBkYXRhWyduYW1lJ10gPSBuYW1lCiAgICBkYXRhWydzZWNyZXQnXSA9
-IHJlcXVlc3QuYXJncy5nZXQoJ3NlY3JldCcpCiAgICB0ZW1wbGF0ZSA9ICI8aDI+SGVsbG8gJXMh
-PC9oMj4iICUgZGF0YVsnbmFtZSddCiAgICByZXR1cm4gcmVuZGVyX3RlbXBsYXRlX3N0cmluZyh0
-ZW1wbGF0ZSwgZGF0YT1kYXRhKQoKCmlmIF9fbmFtZV9fID09ICdfX21haW5fXyc6CiAgICBhcHAu
-cnVuKCkK';
+dGV4dC9odG1sJykKCkBhcHAucm91dGUoJy88bmFtZT4nKQpkZWYgaGVsbG9fbmFtZShuYW1lKToK
+ICAgIGRhdGFbJ25hbWUnXSA9IG5hbWUKICAgIGRhdGFbJ3NlY3JldCddID0gcmVxdWVzdC5hcmdz
+LmdldCgnc2VjcmV0JykKICAgIHRlbXBsYXRlID0gIjxoMj5IZWxsbyAlcyE8L2gyPiIgJSBkYXRh
+WyduYW1lJ10KICAgIHJldHVybiByZW5kZXJfdGVtcGxhdGVfc3RyaW5nKHRlbXBsYXRlLCBkYXRh
+PWRhdGEpCgoKaWYgX19uYW1lX18gPT0gJ19fbWFpbl9fJzoKICAgIGFwcC5ydW4oKQo=';
 $intro = s("Server-side template injection occurs when user-controlled input is embedded into a server-side template, allowing users to inject template directives. This allows an attacker to inject malicious template directives and possibly execute arbitrary code on the affected server.");
 $instruction = s("Modify and submit the update code by patching the vulnerability but should retain the functionality of the existing code.");
 $reference = s("These are sample reference links !!");
 $date = date("Y-m-d H:i:s");
 
-$query2 = "INSERT INTO challenges (name, code, intro, instructions, reference, type, language, timestamp) VALUES ('$name','$code','$intro','$instruction','$reference', 'ssti', 'python', '$date')";
+$query2 = "INSERT INTO challenges (name, code, intro, instructions, reference, type, language, difficulty, timestamp) VALUES ('$name','$code','$intro','$instruction','$reference', 'ssti', 'python', 'hard', '$date')";
 
+
+# Dummy data for challenges
+$name = s("NodeXSS");
+$code = 'dmFyIGV4cHJlc3MgICAgPSByZXF1aXJlKCdleHByZXNzJyk7CnZhciBib2R5UGFyc2VyID0gcmVx
+dWlyZSgnYm9keS1wYXJzZXInKTsKCnZhciBhcHAgPSBleHByZXNzKCk7CgphcHAudXNlKGJvZHlQ
+YXJzZXIuanNvbigpKTsKYXBwLnVzZShib2R5UGFyc2VyLnVybGVuY29kZWQoeyBleHRlbmRlZDog
+dHJ1ZSB9KSk7CgphcHAuZ2V0KCIvIiwgZnVuY3Rpb24gKHJlcSwgcmVzKSB7CiAgICByZXMuc3Rh
+dHVzKDIwMCkuc2VuZCgnPGgxPkhlbGxvIFdvcmxkITwvaDE+Jyk7CiAgfSk7CgphcHAuZ2V0KCcv
+Om5hbWUnLCBmdW5jdGlvbihyZXEsIHJlcykgewogICAgdmFyIG5hbWUgPSByZXEucGFyYW1zLm5h
+bWU7CiAgICByZXMudHlwZSgnaHRtbCcpLnNlbmQoJ0hlbGxvICcgKyBuYW1lKTsKfSk7CgppZiAo
+cmVxdWlyZS5tYWluID09PSBtb2R1bGUpIHsgICAgCiAgICBhcHAubGlzdGVuKDQwMDAsIGZ1bmN0
+aW9uKCkgewogICAgICAgIGNvbnNvbGUubG9nKCAnVGhlIHNlcnZlciBpcyB1cCEnICk7CiAgICB9
+ICk7CiAgICAKfSBlbHNlIHsKICAgIG1vZHVsZS5leHBvcnRzID0gYXBwOyAgIAp9Cgo=';
+$intro = s("Cross-site Scripting (XSS) refers to client-side code injection attack wherein an attacker can execute malicious scripts (also commonly referred to as a malicious payload) into a legitimate website or web application. XSS is amongst the most rampant of web application vulnerabilities and occurs when a web application makes use of unvalidated or unencoded user input within the output it generates.");
+$instruction = s("Modify and submit the update code by patching the vulnerability but should retain the functionality of the existing code.");
+$reference = s("These are sample reference links !!");
+$date = date("Y-m-d H:i:s");
+
+$query3 = "INSERT INTO challenges (name, code, intro, instructions, reference, type, language, difficulty, timestamp) VALUES ('$name','$code','$intro','$instruction','$reference', 'xss', 'nodejs', 'medium', '$date')";
 
 if (mysqli_query($conn, $query)) {
     if (mysqli_query($conn, $query2)) {
+        mysqli_query($conn, $query3);
         echo "[+] Inserted dummy value to challenges. \n";
         echo "<br><br>\n";
     }
@@ -213,7 +232,7 @@ if (mysqli_query($conn, $query)) {
         echo "<br><br>\n";
 }
 
-$query = "INSERT INTO `languages` (`name`) VALUES ('php'), ('python')";
+$query = "INSERT INTO `languages` (`name`) VALUES ('php'), ('python'), ('nodejs')";
 
 if (mysqli_query($conn, $query)) {
         echo "[+] Inserted dummy value to languages. \n";
@@ -262,7 +281,7 @@ if (mysqli_query($conn, $query)) {
 }
 
 // Dummy data for unittests
-$unittest = 'PD9waHAKdXNlIFBIUFVuaXRcRnJhbWV3b3JrXFRlc3RDYXNlOwoKJGN1cnJlbnRfcGF0aCA9IHJl
+$unittest1 = 'PD9waHAKdXNlIFBIUFVuaXRcRnJhbWV3b3JrXFRlc3RDYXNlOwoKJGN1cnJlbnRfcGF0aCA9IHJl
 YWxwYXRoKGRpcm5hbWUoX19GSUxFX18pKTsKCnRyeSB7CnJlcXVpcmVfb25jZSgkY3VycmVudF9w
 YXRoIC4gJy9zcmMucGhwJyk7Cn0gY2F0Y2goRXhjZXB0aW9uICRlKSB7CiAgICBlY2hvICdJTkZP
 OiAnIC4kZS0+Z2V0TWVzc2FnZSgpOwp9CgpjbGFzcyBTcmNUZXN0IGV4dGVuZHMgVGVzdENhc2UK
@@ -280,9 +299,7 @@ IGlucHV0IGFkZGVkIGFzIHNwYW4gdGl0bGUgPC9zcGFuPiI7CiAgICAgICAgJHRoaXMtPmFzc2Vy
 dEVxdWFscygkZXhwZWN0ZWQsICRyZXN1bHQsICJJTkZPOiBGdW5jdGlvbmFsaXR5IG9mIHNhbml0
 aXplKCkgaXMgbm90IGJlaW5nIHJldGFpbmVkICEiKTsKICAgIH0KfQo=';
 
-$query = "INSERT INTO unittests (challenge_id, unittest) VALUES ('1', '$unittest')";
-
-$unittest = 'aW1wb3J0IG9zCmltcG9ydCBzeXMKaW1wb3J0IHRpbWUKaW1wb3J0IHJhbmRvbQppbXBvcnQgaGFz
+$unittest2 = 'aW1wb3J0IG9zCmltcG9ydCBzeXMKaW1wb3J0IHRpbWUKaW1wb3J0IHJhbmRvbQppbXBvcnQgaGFz
 aGxpYgppbXBvcnQgdW5pdHRlc3QKCnN5cy5wYXRoLmluc2VydCgwLCBvcy5wYXRoLmRpcm5hbWUo
 b3MucGF0aC5hYnNwYXRoKF9fZmlsZV9fKSkpCmZyb20gc3JjIGltcG9ydCBhcHAKZnJvbSBzcmMg
 aW1wb3J0IGRhdGEKCgojIFNlZWQgZm9yIHJhbmRvbQpyYW5kb20uc2VlZCh0aW1lLnRpbWUoKSkK
@@ -310,13 +327,50 @@ ICAgc2VsZi5hc3NlcnROb3RJbihzZWNyZXQuZW5jb2RlKCksIHJlc3BvbnNlLmRhdGEsIGInSU5G
 TzogRnVuY3Rpb24gaGVsbG9fbmFtZSgpIGlzIHZ1bG5lcmFibGUgdG8gU1NUSSAhJykKCgoKaWYg
 X19uYW1lX18gPT0gIl9fbWFpbl9fIjoKICAgIHVuaXR0ZXN0Lm1haW4oKQ==';
 
-$query2 = "INSERT INTO unittests (challenge_id, unittest) VALUES ('2', '$unittest')";
+$unittest3 = 'dmFyIGFzc2VydCA9IHJlcXVpcmUoJ2NoYWknKS5hc3NlcnQ7CnZhciBzdXBlcmFnZW50ID0gcmVx
+dWlyZSgnc3VwZXJhZ2VudCcpOwp2YXIgcmFuZG9tc3RyaW5nID0gcmVxdWlyZSgicmFuZG9tc3Ry
+aW5nIik7CnZhciBzZXJ2ZXIgPSByZXF1aXJlKCcuL3NyYycpOwoKZGVzY3JpYmUoJ3NlcnZlcics
+IGZ1bmN0aW9uKCkgewogICAgdmFyIGluc3RhbmNlOyAgIAogCiAgICBiZWZvcmVFYWNoKGZ1bmN0
+aW9uKCBkb25lICkgewogICAgICAgIGluc3RhbmNlID0gc2VydmVyLmxpc3Rlbig0MDAwLCBmdW5j
+dGlvbihlcnIpIHsKICAgICAgICAgICAgZG9uZShlcnIpOwogICAgICAgIH0pCiAgICB9KTsKICAg
+IAogICAgYWZ0ZXJFYWNoKGZ1bmN0aW9uKCBkb25lICkgewogICAgICAgIGluc3RhbmNlLmNsb3Nl
+KGZ1bmN0aW9uKGVycikgewogICAgICAgICAgICBkb25lKGVycik7CiAgICAgICAgfSk7CiAgICB9
+KTsKICAgIAogICAgCiAgICBpdCgnc2hvdWxkIHJldHVybiBIZWxsbyBXb3JsZCBhdCAvJywgZnVu
+Y3Rpb24oIGRvbmUgKSB7IAogICAgICAgIHN1cGVyYWdlbnQuZ2V0KCdodHRwOi8vbG9jYWxob3N0
+OjQwMDAvJykuZW5kKGZ1bmN0aW9uKGVyciwgcmVzKSB7CiAgICAgICAgICAgIGlmIChlcnIpIHsg
+cmV0dXJuIGRvbmUoZXJyKTsgfQogICAgICAgIHRyeXsgICAgICAgICAgICAKICAgICAgICAgICAg
+YXNzZXJ0LmVxdWFsKHJlcy5zdGF0dXMsIDIwMCk7CiAgICAgICAgICAgIGFzc2VydC5lcXVhbChy
+ZXMudGV4dCwgJzxoMT5IZWxsbyBXb3JsZCE8L2gxPicpOwogICAgICAgICAgICBkb25lKCk7CiAg
+ICAgICAgfSBjYXRjaCAoZXJyb3IpewogICAgICAgICAgICBlcnJvci5tZXNzYWdlID0gIklORk86
+IFBhdGggLyBpcyBub3Qgd29ya2luZyEiOwogICAgICAgIH0KICAgICAgICB9KTsKICAgICAgICAK
+ICAgIH0pOwoKCiAgICBpdCgnc2hvdWxkIHJldHVybiBIZWxsbyA8cmFuZG9tPiBhdCAvPHJhbmRv
+bT4nLCBmdW5jdGlvbiggZG9uZSApIHsKICAgICAgICB2YXIgcmFuZG9tID0gcmFuZG9tc3RyaW5n
+LmdlbmVyYXRlKCk7CiAgICAgICAgc3VwZXJhZ2VudC5nZXQoJ2h0dHA6Ly9sb2NhbGhvc3Q6NDAw
+MC8nICsgcmFuZG9tKS5lbmQoZnVuY3Rpb24oZXJyLCByZXMpIHsKCiAgICAgICAgICAgaWYgKGVy
+cikgeyByZXR1cm4gZG9uZShlcnIpOyB9CiAgICAgICAgICAgCiAgICAgICAgICAgIHRyeSB7CiAg
+ICAgICAgICAgICAgICBhc3NlcnQuZXF1YWwocmVzLnN0YXR1cywgMjAwKTsKICAgICAgICAgICAg
+ICAgIGFzc2VydC5lcXVhbChyZXMudGV4dCwgJ0hlbGxvICcgKyByYW5kb20pOwogICAgICAgICAg
+ICB9IGNhdGNoIChlcnJvcikgewogICAgICAgICAgICAgICAgZXJyb3IubWVzc2FnZSA9ICJJTkZP
+OiBQYXRoIC86bmFtZSBpcyBub3Qgd29ya2luZyEiOwogICAgICAgICAgICAgICAgcmV0dXJuIGRv
+bmUoZXJyb3IpOwogICAgICAgICAgICB9CiAgICAgICAgICAgIGRvbmUoKTsKICAgICAgICB9KTsK
+CiAgICB9KTsKCgogICAgaXQoJ3Nob3VsZCBub3QgZXhlY3V0ZSBhbGVydCgpJywgZnVuY3Rpb24o
+IGRvbmUgKSB7CiAgICAgICAgdmFyIHJhbmRvbSA9IHJhbmRvbXN0cmluZy5nZW5lcmF0ZSgpOwog
+ICAgICAgIHZhciBzdHJpbmcgPSAnPHN2Zy9vbmxvYWQ9YWxlcnQoIicgKyByYW5kb20gKyAnIik7
+JzsKICAgICAgICBzdXBlcmFnZW50LmdldCgnaHR0cDovL2xvY2FsaG9zdDo0MDAwLycgKyBlbmNv
+ZGVVUklDb21wb25lbnQoc3RyaW5nKSkuZW5kKGZ1bmN0aW9uKGVyciwgcmVzKSB7CgogICAgICAg
+ICAgIGlmIChlcnIpIHsgcmV0dXJuIGRvbmUoZXJyKTsgfQoKICAgICAgICAgICAgdHJ5IHsKICAg
+ICAgICAgICAgICAgIGFzc2VydC5lcXVhbChyZXMuc3RhdHVzLCAyMDApOwogICAgICAgICAgICAg
+ICAgYXNzZXJ0Lm5vdEVxdWFsKHJlcy50ZXh0LCAnSGVsbG8gJyArIHN0cmluZyk7CiAgICAgICAg
+ICAgIH0gY2F0Y2ggKGVycm9yKSB7CiAgICAgICAgICAgICAgICBlcnJvci5tZXNzYWdlID0gIklO
+Rk86IFBhdGggLzpuYW1lIGlzIHZ1bG5lcmFibGUgdG8gWFNTISI7CiAgICAgICAgICAgICAgICBy
+ZXR1cm4gZG9uZShlcnJvcik7CiAgICAgICAgICAgIH0KICAgICAgICAgICAgZG9uZSgpOwogICAg
+ICAgIH0pOwoKICAgIH0pOwoKCn0pOwo=';
+
+$query = "INSERT INTO unittests (challenge_id, unittest) VALUES ('1', '".$unittest1."'), ('2', '".$unittest2."'), ('3', '".$unittest3."')";
 
 if (mysqli_query($conn, $query)) {
-    if (mysqli_query($conn, $query2)) {
         echo "[+] Inserted data new table unittests. \n";
         echo "<br><br>\n";
-    }
 } else {
         echo "[+] Error insert into unittest: " . mysqli_error($conn);
         echo "<br><br>\n";
