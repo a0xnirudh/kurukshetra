@@ -781,4 +781,16 @@ function get_admin_email(){
     return $email;
 }
 
+function get_challenge_language($id) {
+    global $conn;
+    $query = "select language from challenges where id=?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("d", $id);
+    $stmt->execute();
+    $stmt->bind_result($type);
+    $stmt->fetch();
+
+    return $type;
+}
+
 ?>

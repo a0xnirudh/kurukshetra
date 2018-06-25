@@ -114,6 +114,9 @@ $instructions = $row['instructions'];
                     foreach (explode("\n", $hints) as $hint) {
                         echo '<li>'.htmlspecialchars($hint).'</li>';
                     }
+                    if ($row['language'] == 'nodejs') {
+                        $row['language'] = 'javascript';
+                    }
                     ?>
             </div>
         </div>
@@ -167,7 +170,7 @@ $instructions = $row['instructions'];
         editor.setTheme("ace/theme/ambiance");
         editor.getSession().setTabSize(4);
         document.getElementById('editor').style.fontSize='14px';
-        editor.getSession().setMode({path:"ace/mode/php", inline:true});
+        editor.getSession().setMode({path:"ace/mode/<?php echo htmlspecialchars($row['language']);?>", inline:true});
         editor.setHighlightActiveLine(true);
         editor.setShowPrintMargin(true);
         $("#dark").addClass('color_link_active');
