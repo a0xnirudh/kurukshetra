@@ -309,6 +309,17 @@ class Docker extends UnitTest
             $error = "";
             $output = "";
             $count = 0;
+            $phpErrors = ['PHP Parse error:'];
+
+            foreach ($temp as $out) {
+                foreach ($phpErrors as $err) {
+                    if (strpos($out, $err) !== false) {
+                        $error .= explode($err, $out)[1] . "\n";
+                        echo $err . "\n\n" . $error;
+                        return;
+                    }
+                }
+            }
 
             foreach ($temp as $out) {
                 if (stripos($out, 'INFO:') !== false) {
