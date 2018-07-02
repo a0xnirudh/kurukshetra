@@ -86,7 +86,8 @@ function get_categories()
 function get_challenges()
 {
     global $conn;
-    $query = "SELECT * from challenges where type in (SELECT distinct name from categories)";
+    $email_id = $_SESSION['userData']['email'];
+    $query = "SELECT * from challenges where (type in (SELECT distinct name from categories) and enabled = 1 or id in (select distinct level_id from user_level_enabled_challenges where email_id = '$email_id'))";
     $result = mysqli_query($conn, $query);
     return $result;
 }
@@ -608,16 +609,27 @@ function show_challenge($id, $challenge){
 }
 
 
-function print_message($error, $msg){
-    if($msg){
-        if(!$error){
+/**
+ * Prints success/error messages
+ *
+ * Function which prints the error messages depending up on success or failure
+ * of an action
+ *
+ * @param boolean $error Trigger error if true
+ * @param string  $msg   Message printed to the user
+ *
+ * @return void
+ */
+function Print_message($error, $msg)
+{
+    if ($msg) {
+        if (!$error) {
             ?>
             <div class="alert alert-success">
                 <strong>Success!</strong> <?php echo $msg; ?>
             </div>
             <?php
-        }
-        else{
+        } else {
             ?>
             <div class="alert alert-danger">
                 <strong>Danger!</strong> <?php echo $msg; ?>
@@ -739,21 +751,21 @@ function enable_disable_challenge($id,$action){
 
 function chall_per_type(){
     global $conn;
-    $prevQuery = "SELECT type as name, count(*) as y from challenges group by type";
+    $prevQuery = "SELECT type as name, count(*) as y from challenges where (enabled = 1 and approved = 1) group by type";
     $result = mysqli_query($conn, $prevQuery);
     return $result;
 }
 
 function chall_per_lang(){
     global $conn;
-    $prevQuery = "SELECT language as name, count(*) as y from challenges group by language";
+    $prevQuery = "SELECT language as name, count(*) as y from challenges where (enabled = 1 and approved = 1) group by language";
     $result = mysqli_query($conn, $prevQuery);
     return $result;
 }
 
 function chall_per_difficulty(){
     global $conn;
-    $prevQuery = "SELECT difficulty as name, count(*) as y from challenges group by difficulty";
+    $prevQuery = "SELECT difficulty as name, count(*) as y from challenges where (enabled = 1 and approved = 1) group by difficulty";
     $result = mysqli_query($conn, $prevQuery);
     return $result;
 }
@@ -792,5 +804,67 @@ function get_challenge_language($id) {
 
     return $type;
 }
+
+
+function uuid_v4() {
+    return sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
+        mt_rand(0, 0xffff), mt_rand(0, 0xffff),
+        mt_rand(0, 0xffff),
+        mt_rand(0, 0x0fff) | 0x4000,
+        mt_rand(0, 0x3fff) | 0x8000,
+        mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff)
+    );
+  }
+
+function get_challenge_code($email_id,$level_id) {
+    global $conn;
+
+    $chall_codes = get_challenge_flag($email_id,$level_id);
+
+    foreach ($chall_codes as $chall_code) {
+        return $chall_code['chall_code'];
+    }
+
+    $chall_code = uuid_v4();
+
+    $prevQuery = "INSERT INTO user_level_enabled_challenges(chall_code,level_id,email_id,enabled) values(?,?,?,1)";
+    $stmt = $conn->prepare($prevQuery);
+
+    $stmt->bind_param("sss",$chall_code,$level_id,$email_id);
+    $stmt->execute();
+
+    if(mysqli_stmt_affected_rows($stmt))
+        return $chall_code;
+    else
+        return null;
+
+}
+
+function get_challenge_flag($email_id,$level_id) {;
+
+    global $conn;
+    $prevQuery = "SELECT chall_code from user_level_enabled_challenges where email_id = '$email_id' and level_id = $level_id limit 1";
+    $results = mysqli_query($conn, $prevQuery);
+
+    return $results;
+
+}
+
+function check_enabled_level($level_id) {
+    global $conn;
+
+    $prevQuery = "SELECT c.enabled, b.enabled from challenges c, user_level_enabled_challenges b where ((c.id = $level_id and c.enabled = 1) or (b.level_id = $level_id and b.email_id = '".$_SESSION['userData']['email']."' and b.enabled = 1)) limit 1";
+    $results = mysqli_query($conn, $prevQuery);
+    
+    foreach ($results as $row) {
+        return True;
+    }
+
+    die(header('Location: /challenges/index.php?error=unauthorised'));
+}
+
+
+
+
 
 ?>

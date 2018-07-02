@@ -100,6 +100,8 @@ if (!check_login()) {//not logged in? redirect to login page
                     <span id="challenge-type-head" class="title">All Challenges</span>
                     <div class="btn-group pull-right" id="easy-med-hard-btn" role="group">
                         Welcome <span class="title"><?php welcome_message(); ?> </span></br></br>
+
+
                         <?php
                         $difficulties = get_difficulties();
                         foreach ($difficulties as $difficulty) {
@@ -111,10 +113,21 @@ if (!check_login()) {//not logged in? redirect to login page
                 </div>
             </div>
         </nav>
+        <?php
+                        
+            if($_GET['error'] == "unauthorised")
+                Print_message(true, "User Not authorized.");
+
+        ?>
+
         <div id="page_content">
             <div class="col-md-12 challenge-list">
                 <?php
                 $result = get_challenges();
+
+                if($result->num_rows == 0)
+                    echo "<center><label>No Challenges available for you. Try again later.</label></center></label>";
+
                 foreach ($result as $row) {
 
                     echo '<div class="challenge-box '.$row['type'].' '.$row['difficulty'].'">

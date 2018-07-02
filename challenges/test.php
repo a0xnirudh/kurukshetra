@@ -7,6 +7,8 @@ if (!check_login()) { //not logged in?
     header('Location: /login/index.php'); //redirect to login page
 }
 
+$id = intval($_GET['id']);
+check_enabled_level($id);
 /**
  * Class HTTP - HTTP is a class where functions are defined which can
  * initiate GET/POST requests along with data.

@@ -33,6 +33,7 @@ if (!isset($_GET['id'])) {
 // Get the integer value of a variable.
 // Careful about exponential
 $id = intval($_GET['id']);
+check_enabled_level($id);
 
 //Get all the challenge details from DB
 $row = get_challenge($id);
