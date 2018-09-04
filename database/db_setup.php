@@ -296,6 +296,24 @@ if (mysqli_query($conn, $query)) {
 }
 
 
+# user_challenges table
+$query = "CREATE TABLE `user_challenges` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_email` varchar(500) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  `chall_id` int(11) NOT NULL,
+  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+
+if (mysqli_query($conn, $query)) {
+        echo "[+] Created new table user_challenges. \n";
+        echo "<br><br>\n";
+} else {
+        echo "[+] Error creating new table: " . mysqli_error($conn);
+        echo "<br><br>\n";
+}
+
+
 # Unittest table
 $query = "CREATE TABLE `unittests` (
 `id` int NOT NULL AUTO_INCREMENT,
