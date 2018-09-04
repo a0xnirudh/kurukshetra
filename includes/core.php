@@ -3,7 +3,6 @@
 session_start();
 require $_SERVER['DOCUMENT_ROOT'].'/database/db_credentials.php';
 
-
 /**
  * Check if a user is logged in or not - check_login()
  *
@@ -863,8 +862,53 @@ function check_enabled_level($level_id) {
     die(header('Location: /challenges/index.php?error=unauthorised'));
 }
 
+function get_dev_token(){
+    $config = parse_ini_file('/var/config/.kurukshetra.ini');
+    $token = $config['token'];
 
+    return $token;
 
+}
 
+function update_user_challenge_status($chall_id){
+    global $conn;
+
+    $user_email = $_SESSION['userData']['email'];
+
+    if(check_user_challenge_status($chall_id)){
+        return null;
+    }
+
+    $prevQuery = "INSERT INTO user_challenges(user_email, chall_id) values(?,?)";
+    $stmt = $conn->prepare($prevQuery);
+
+    $stmt->bind_param("ss",$user_email,$chall_id);
+    $stmt->execute();
+
+    if(mysqli_stmt_affected_rows($stmt))
+        return True;
+    else
+        return False;
+}
+
+function check_user_challenge_status($chall_id){
+    global $conn;
+
+    $user_email = $_SESSION['userData']['email'];
+
+    $query = "SELECT count(*) as count from user_challenges where chall_id=? and user_email=?";
+    $stmt = $conn->prepare($query);
+
+    $stmt->bind_param("ds",$chall_id,$user_email);
+    $stmt->execute();
+
+    $stmt->bind_result($count);
+    $stmt->fetch();
+
+    if($count > 0)
+        return True;
+
+    return False;
+}
 
 ?>

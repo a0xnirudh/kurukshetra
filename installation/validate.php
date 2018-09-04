@@ -106,6 +106,8 @@ try{
         $config['google_oauth']['clientId'] = $clientId;
         $config['google_oauth']['clientSecret'] = $clientSecret;
 
+        $config['developer_settings']['token'] = md5($clientId." | ".$clientSecret);
+
         write_ini_file('/var/config/.kurukshetra.ini', $config);
     }
 

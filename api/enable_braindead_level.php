@@ -6,7 +6,9 @@
     $api_key = $_REQUEST['api_key'];
     $bad_api_key['error'] = "bad api key";
 
-    if($api_key != "65d1ef30-c1f8-4d5e-9a53-ea8c1d2deb6c")
+    $token = get_dev_token();
+
+    if($api_key != $token)
         die(json_encode($bad_api_key));
 
     $email = $_REQUEST['email_id'];
@@ -18,5 +20,6 @@
     $chall_code['level'] = $level_id;
    
     echo json_encode($chall_code);
+    die();
 
 ?>

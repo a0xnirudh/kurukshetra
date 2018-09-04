@@ -276,6 +276,25 @@ if (mysqli_query($conn, $query)) {
         echo "<br><br>\n";
 }
 
+# user_level_enabled_challenges table
+$query = "CREATE TABLE `user_level_enabled_challenges` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `level_id` longblob NOT NULL,
+  `email_id` longblob NOT NULL,
+  `enabled` int(11) DEFAULT '0',
+  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `chall_code` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+
+if (mysqli_query($conn, $query)) {
+        echo "[+] Created new table user_level_enabled_challenges. \n";
+        echo "<br><br>\n";
+} else {
+        echo "[+] Error creating new table: " . mysqli_error($conn);
+        echo "<br><br>\n";
+}
+
 
 # Unittest table
 $query = "CREATE TABLE `unittests` (

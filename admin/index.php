@@ -105,6 +105,10 @@ check_admin();
 
         <div id="page_content">
             <div class="container-fluid bg-4 text-center">
+                <div align="left">
+                    Click here to view <a style="text-decoration:underline" href="javascript:show_token()">Developer Token</a>
+                    </br></br>
+                </div>
                 <div class="row no-gutter">
                     <div class="columns col-sm-4">
                         <div id="container" style="min-width: 310px; height: 300px; max-width: 600px; margin: 0 auto"></div>
@@ -131,6 +135,10 @@ check_admin();
             $('#sidebar').toggleClass('active');
         });
     });
+
+    function show_token(){
+        alert("<?php echo $token; ?>");
+    }
 </script>
 </body>
 </html>

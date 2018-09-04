@@ -340,6 +340,7 @@ class Docker extends UnitTest
             }
 
             if ($output == "" && $error == "") {
+                update_user_challenge_status($_POST['id']);
                 $output = "Congratulations ! You have successfully completed the challenge.";
             }
 
@@ -395,6 +396,7 @@ class Docker extends UnitTest
             }
 
             if ($output == "" && $error == "") {
+                update_user_challenge_status($_POST['id']);
                 $output = "Congratulations ! You have successfully completed the challenge.";
             }
 
@@ -449,6 +451,7 @@ class Docker extends UnitTest
             }
 
             if ($output == "" && $error == "") {
+                update_user_challenge_status($_POST['id']);
                 $output = "Congratulations ! You have successfully completed the challenge.";
             }
 
@@ -500,6 +503,7 @@ class Docker extends UnitTest
             }
 
             if ($output == "" && $error == "") {
+                update_user_challenge_status($_POST['id']);
                 $output = "Congratulations ! You have successfully completed the challenge.";
             }
 

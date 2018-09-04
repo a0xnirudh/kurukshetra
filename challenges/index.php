@@ -132,8 +132,12 @@ if (!check_login()) {//not logged in? redirect to login page
 
                     echo '<div class="challenge-box '.$row['type'].' '.$row['difficulty'].'">
                                 <br>
-                                <a id="'.$row['name'].'" class="challenge-title" href="challenge.php?id='.$row['id'].'">'.$row['name'].'</a>
-                                <p class="challenge-description">
+                                <a id="'.$row['name'].'" class="challenge-title" href="challenge.php?id='.$row['id'].'">'.$row['name'].'</a>';
+
+                    if(check_user_challenge_status($row['id']))
+                        echo "<font color='green'> (completed)</font>";
+
+                    echo '<p class="challenge-description">
                                     '.$row['intro'].'
                                 </p>
                                 <p class="challenge-type">Language : <span style="color:#535353">' . $row['language'] . '</span></p>
