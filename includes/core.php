@@ -852,9 +852,9 @@ function get_challenge_flag($email_id,$level_id) {;
 function check_enabled_level($level_id) {
     global $conn;
 
-    $prevQuery = "SELECT c.enabled, b.enabled from challenges c, user_level_enabled_challenges b where ((c.id = $level_id and c.enabled = 1) or (b.level_id = $level_id and b.email_id = '".$_SESSION['userData']['email']."' and b.enabled = 1)) limit 1";
+    $prevQuery = "(SELECT c.enabled from challenges c where (c.id = $level_id and c.enabled = 1)) union (SELECT b.enabled from user_level_enabled_challenges b where (b.level_id = $level_id and b.email_id = '".$_SESSION['userData']['email']."' and b.enabled = 1))";
     $results = mysqli_query($conn, $prevQuery);
-    
+
     foreach ($results as $row) {
         return True;
     }

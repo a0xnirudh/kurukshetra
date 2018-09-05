@@ -424,13 +424,13 @@ class Docker extends UnitTest
             $error = "";
             $output = "";
             $count = 0;
-            $nodeErrors = ['ReferenceError:', 'TypeError:'];
+            $nodeErrors = ['ReferenceError:', 'TypeError:', 'Error:'];
 
             foreach ($temp as $out) {
                 foreach ($nodeErrors as $err) {
                     if (strpos($out, $err) !== false) {
                         $error .= explode($err, $out)[1] . "\n";
-                        echo "Error: \n\n" . $err . $error;
+                        echo "Error: \n\n" . $error;
                         return;
                     }
                 }
