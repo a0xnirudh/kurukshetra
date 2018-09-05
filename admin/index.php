@@ -137,7 +137,7 @@ check_admin();
     });
 
     function show_token(){
-        alert("<?php echo $token; ?>");
+        alert("<?php echo get_dev_token(); ?>");
     }
 </script>
 </body>
