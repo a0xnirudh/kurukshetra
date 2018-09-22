@@ -109,6 +109,7 @@ class UnitTest extends Http
 {
     public $folder = "";
     public $unittest = "";
+    public $srccode = "";
 
     /**
      * Connecting to the MySQL - mysqlConnect()
@@ -132,6 +133,15 @@ class UnitTest extends Http
         $stmt->execute();
         $stmt->bind_result($this->unittest);
         $stmt->fetch();
+        $stmt->close();
+
+        $query2 = "SELECT code from challenges where id=? LIMIT 1";
+        $stmt2 = $conn->prepare($query2);
+        $stmt2->bind_param("d", $_POST['id']);
+        $stmt2->execute();
+        $stmt2->bind_result($this->srccode);
+        $stmt2->fetch();
+        $stmt2->close();
     }
 
     /**
@@ -526,13 +536,135 @@ class Docker extends UnitTest
         $this->httpDelete($this->url . "/containers/" . $this->container_id . "?force=1");
 
     }
+    /**
+    * Function openport() will check if a given port is open or not.
+    */
+    function openport($port, $ip='127.0.0.1')
+    {
+        $fp = @fsockopen($ip, $port, $errno, $errstr, 0.1);
+        if (!$fp) {
+            return false;
+        }
+        else {
+            fclose($fp);
+            return true;
+        }
+    }
+
+    /**
+    * Function hostChallenge() will create a new container using which
+    * we can host our challenge. The uploads directory is mounted to the docker
+    * as *read only* and challenges are run inside it.
+    *
+    * @var array $res    Response of the container creation request
+    * @var array $params Parameters required for creating a container
+    *
+    * @return void
+    */
+    function hostChallenge()
+    {
+        if (isset($_SESSION['challenge_status'][(int)$_POST['id']]['port'])) {
+            header('Content-Type: application/json');
+            $output = array("status" => "true");
+            echo json_encode($output);
+            return;
+        }
+
+        do {
+            $port = rand(10000, 50000);
+        } while($this->openport($port));
+
+        $language = get_challenge_language($_POST['id']);
+        if (!$language)
+        {
+            $output = array("status" => "false");
+            header('Content-Type: application/json');
+            echo json_encode($output);
+            return;
+        }
+
+        if($language == "php"){
+            $params = (object) [
+            "Cmd" => ["sh", "-c", "/sbin/my_init; tail -f /dev/null"],
+            "Image" => "kurukshetra",
+            "WorkingDir" => "/var/www/html",
+            "Env" => ["NODE_PATH=/usr/local/lib/node_modules"],
+            "HostConfig" => ["Binds" => [__DIR__ . "/uploads/" . $this->folder . ":/var/www/html:ro"], "PortBindings" => ["80/tcp" => [["HostPort" => (string)$port]]]],
+            "ExposedPorts" => ["80/tcp" => (object) null],
+            ];
+        }
+
+        if($language == "python"){
+            $params = (object) [
+            "Cmd" => ["python", "src.py"],
+            "User" => "kurukshetra",
+            "Image" => "kurukshetra",
+            "WorkingDir" => "/var/www/html",
+            "Env" => ["NODE_PATH=/usr/local/lib/node_modules"],
+            "HostConfig" => ["Binds" => [__DIR__ . "/uploads/" . $this->folder . ":/var/www/html:ro"], "PortBindings" => ["4000/tcp" => [["HostPort" => (string)$port]]]],
+            "ExposedPorts" => ["4000/tcp" => (object) null],
+            ];
+        }
+
+        if($language == "nodejs"){
+            $params = (object) [
+            "Cmd" => ["node", "src.js"],
+            "User" => "kurukshetra",
+            "Image" => "kurukshetra",
+            "WorkingDir" => "/var/www/html",
+            "Env" => ["NODE_PATH=/usr/local/lib/node_modules"],
+            "HostConfig" => ["Binds" => [__DIR__ . "/uploads/" . $this->folder . ":/var/www/html:ro"], "PortBindings" => ["4000/tcp" => [["HostPort" => (string)$port]]]],
+            "ExposedPorts" => ["4000/tcp" => (object) null],
+            ];
+        }
+
+        if($language == "ruby"){
+            $params = (object) [
+            "Cmd" => ["ruby", "src.rb"],
+            "User" => "kurukshetra",
+            "Image" => "kurukshetra",
+            "WorkingDir" => "/var/www/html",
+            "Env" => ["NODE_PATH=/usr/local/lib/node_modules"],
+            "HostConfig" => ["Binds" => [__DIR__ . "/uploads/" . $this->folder . ":/var/www/html:ro"], "PortBindings" => ["4000/tcp" => [["HostPort" => (string)$port]]]],
+            "ExposedPorts" => ["4000/tcp" => (object) null],
+            ];
+        }
+
+        $res = json_decode($this->httpPost($this->url . "/containers/create", json_encode($params)), true);
+        $this->container_id = $res["Id"];
+
+        // Starting the container
+        $res = $this->httpPost($this->url . "/containers/" . $this->container_id . "/start");
+
+        if($this->container_id) {
+            $_SESSION['challenge_status'][(int)$_POST['id']]['port'] = $port;
+            $_SESSION['challenge_status'][(int)$_POST['id']]['container_id'] = $this->container_id;
+        }
+
+        $output = array("status" => "false");
+        if($this->openport($port))
+            $output = array("status" => "true");
+
+        header('Content-Type: application/json');
+        echo json_encode($output);
+
+        return;
+    }
 
 }
 
 $docker = New Docker();
 $docker -> mysqlConnect();
-$docker -> prepare();
-$docker -> createContainer();
-$docker -> execContainer();
-$docker -> removeContainer();
-$docker -> cleanup();
+
+if ($_REQUEST['type'] == 'host'){
+    $_POST['function'] = $docker->srccode;
+    $docker -> prepare();
+    $docker -> hostChallenge();
+}
+else {
+    $docker -> prepare();
+    $docker -> createContainer();
+    $docker -> execContainer();
+    $docker -> removeContainer();
+    $docker -> cleanup();
+}
