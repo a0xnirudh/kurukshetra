@@ -815,22 +815,33 @@ function uuid_v4() {
     );
   }
 
-function get_challenge_code($email_id,$level_id) {
+function get_challenge_code($email_id,$level_id,$enabled) {
     global $conn;
 
-    $chall_codes = get_challenge_flag($email_id,$level_id);
+    if($enabled == 1)
+    {
+        $chall_codes = get_challenge_flag($email_id,$level_id);
 
-    foreach ($chall_codes as $chall_code) {
-        return $chall_code['chall_code'];
+        foreach ($chall_codes as $chall_code) {
+            return $chall_code['chall_code'];
+        }
+
+        $chall_code = uuid_v4();
+
+        $prevQuery = "INSERT INTO user_level_enabled_challenges(chall_code,level_id,email_id,enabled) values(?,?,?,?)";
+        $stmt = $conn->prepare($prevQuery);
+
+        $stmt->bind_param("sssd",$chall_code,$level_id,$email_id,$enabled);
+        $stmt->execute();
     }
+    else
+    {
+        $prevQuery = "UPDATE user_level_enabled_challenges set enabled=? where level_id=? and email_id=?";
+        $stmt = $conn->prepare($prevQuery);
 
-    $chall_code = uuid_v4();
-
-    $prevQuery = "INSERT INTO user_level_enabled_challenges(chall_code,level_id,email_id,enabled) values(?,?,?,1)";
-    $stmt = $conn->prepare($prevQuery);
-
-    $stmt->bind_param("sss",$chall_code,$level_id,$email_id);
-    $stmt->execute();
+        $stmt->bind_param("dds",$enabled,$level_id,$email_id);
+        $stmt->execute();
+    }
 
     if(mysqli_stmt_affected_rows($stmt))
         return $chall_code;
