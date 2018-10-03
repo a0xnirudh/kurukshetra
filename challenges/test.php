@@ -563,9 +563,11 @@ class Docker extends UnitTest
     */
     function hostChallenge()
     {
-        if (isset($_SESSION['challenge_status'][(int)$_POST['id']]['port'])) {
+        $action = "start";
+        $port = $_SESSION['challenge_status'][(int)$_POST['id']]['port'];
+        if (isset($port)) {
             header('Content-Type: application/json');
-            $output = array("status" => "true");
+            $output = array("status" => True, "port" => $port, "action" => $action);
             echo json_encode($output);
             return;
         }
@@ -575,9 +577,10 @@ class Docker extends UnitTest
         } while($this->openport($port));
 
         $language = get_challenge_language($_POST['id']);
+
         if (!$language)
         {
-            $output = array("status" => "false");
+            $output = array("status" => False, "port" => null, "action" => $action);
             header('Content-Type: application/json');
             echo json_encode($output);
             return;
@@ -590,7 +593,7 @@ class Docker extends UnitTest
             "WorkingDir" => "/var/www/html",
             "Env" => ["NODE_PATH=/usr/local/lib/node_modules"],
             "HostConfig" => ["Binds" => [__DIR__ . "/uploads/" . $this->folder . ":/var/www/html:ro"], "PortBindings" => ["80/tcp" => [["HostPort" => (string)$port]]]],
-            "ExposedPorts" => ["80/tcp" => (object) null],
+            "ExposedPorts" => ["80/tcp" => (object) Null],
             ];
         }
 
@@ -602,7 +605,7 @@ class Docker extends UnitTest
             "WorkingDir" => "/var/www/html",
             "Env" => ["NODE_PATH=/usr/local/lib/node_modules"],
             "HostConfig" => ["Binds" => [__DIR__ . "/uploads/" . $this->folder . ":/var/www/html:ro"], "PortBindings" => ["4000/tcp" => [["HostPort" => (string)$port]]]],
-            "ExposedPorts" => ["4000/tcp" => (object) null],
+            "ExposedPorts" => ["4000/tcp" => (object) Null],
             ];
         }
 
@@ -614,7 +617,7 @@ class Docker extends UnitTest
             "WorkingDir" => "/var/www/html",
             "Env" => ["NODE_PATH=/usr/local/lib/node_modules"],
             "HostConfig" => ["Binds" => [__DIR__ . "/uploads/" . $this->folder . ":/var/www/html:ro"], "PortBindings" => ["4000/tcp" => [["HostPort" => (string)$port]]]],
-            "ExposedPorts" => ["4000/tcp" => (object) null],
+            "ExposedPorts" => ["4000/tcp" => (object) Null],
             ];
         }
 
@@ -626,7 +629,7 @@ class Docker extends UnitTest
             "WorkingDir" => "/var/www/html",
             "Env" => ["NODE_PATH=/usr/local/lib/node_modules"],
             "HostConfig" => ["Binds" => [__DIR__ . "/uploads/" . $this->folder . ":/var/www/html:ro"], "PortBindings" => ["4000/tcp" => [["HostPort" => (string)$port]]]],
-            "ExposedPorts" => ["4000/tcp" => (object) null],
+            "ExposedPorts" => ["4000/tcp" => (object) Null],
             ];
         }
 
@@ -641,13 +644,38 @@ class Docker extends UnitTest
             $_SESSION['challenge_status'][(int)$_POST['id']]['container_id'] = $this->container_id;
         }
 
-        $output = array("status" => "false");
+        $output = array("status" => False,"port" => Null, "action" => $action);
         if($this->openport($port))
-            $output = array("status" => "true");
+            $output = array("status" => True,"port" => $port, "action" => $action);
 
         header('Content-Type: application/json');
         echo json_encode($output);
 
+        return;
+    }
+
+    function destroyChallenge()
+    {
+        if (!isset($_SESSION['challenge_status'][(int)$_POST['id']]['container_id'])) {
+            header('Content-Type: application/json');
+            $output = array("status" => False,"port" => Null, "action" => "stop");
+            echo json_encode($output);
+            return;
+        }
+
+        $container_id = $_SESSION['challenge_status'][(int)$_POST['id']]['container_id'];
+
+        // Killing the container
+        $this->httpPost($this->url . "/containers/" . $container_id . "/kill");
+
+        // Removing the container
+        $this->httpDelete($this->url . "/containers/" . $container_id . "?force=1");
+
+        // Removing container data from session
+        unset($_SESSION['challenge_status'][(int)$_POST['id']]);
+
+        $output = array("status" => True,"port" => Null, "action" => "stop");
+        echo json_encode($output);
         return;
     }
 
@@ -656,10 +684,13 @@ class Docker extends UnitTest
 $docker = New Docker();
 $docker -> mysqlConnect();
 
-if ($_REQUEST['type'] == 'host'){
+if ($_POST['action'] == 'start'){
     $_POST['function'] = $docker->srccode;
     $docker -> prepare();
     $docker -> hostChallenge();
+}
+else if ($_POST['action'] == 'stop') {
+    $docker -> destroyChallenge();
 }
 else {
     $docker -> prepare();
