@@ -563,6 +563,7 @@ class Docker extends UnitTest
     */
     function hostChallenge()
     {
+        global $conn;
         $action = "start";
         $port = $_SESSION['challenge_status'][(int)$_POST['id']]['port'];
         if (isset($port)) {
@@ -575,6 +576,8 @@ class Docker extends UnitTest
         do {
             $port = rand(10000, 50000);
         } while($this->openport($port));
+
+        $container_name = "kurukshetra-" . (string)$port;
 
         $language = get_challenge_language($_POST['id']);
 
@@ -633,7 +636,7 @@ class Docker extends UnitTest
             ];
         }
 
-        $res = json_decode($this->httpPost($this->url . "/containers/create", json_encode($params)), true);
+        $res = json_decode($this->httpPost($this->url . "/containers/create?name=kurukshetra-" . (string)$port, json_encode($params)), true);
         $this->container_id = $res["Id"];
 
         // Starting the container
@@ -651,11 +654,19 @@ class Docker extends UnitTest
         header('Content-Type: application/json');
         echo json_encode($output);
 
+        // Adding the container details to DB
+        $query = "INSERT into container_details(email_id, container_id, container_name, port) VALUES (?,?,?,?)";
+        $stmt = $conn->prepare($query);
+        $stmt->bind_param("ssss", $_SESSION["userData"]["email"], $this->container_id, $container_name, $port);
+        $stmt->execute();
+
         return;
     }
 
     function destroyChallenge()
     {
+        global $conn;
+
         if (!isset($_SESSION['challenge_status'][(int)$_POST['id']]['container_id'])) {
             header('Content-Type: application/json');
             $output = array("status" => False,"port" => Null, "action" => "stop");
@@ -676,6 +687,13 @@ class Docker extends UnitTest
 
         $output = array("status" => True,"port" => Null, "action" => "stop");
         echo json_encode($output);
+
+        //Update DB with the container details
+        $query = "UPDATE container_details SET status='exited' where container_id=?";
+        $stmt = $conn->prepare($query);
+        $stmt->bind_param("s", $container_id);
+        $stmt->execute();
+
         return;
     }
 

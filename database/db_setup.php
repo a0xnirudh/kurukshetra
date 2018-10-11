@@ -153,6 +153,27 @@ if (mysqli_query($conn, $query)) {
 }
 
 
+# Container Tables
+$query = "CREATE TABLE `container_details` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `email_id` varchar(100),
+  `container_id` varchar(250),
+  `container_name` varchar(50),
+  `port` varchar(10),
+  `status` enum('running','exited') default 'running',
+  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+);";
+
+if (mysqli_query($conn, $query)) {
+        echo "[+] Created new table Container details. \n";
+        echo "<br><br>\n";
+} else {
+        echo "[+] Error creating new table: " . mysqli_error($conn);
+        echo "<br><br>\n";
+}
+
+
 # Dummy data for challenges
 $name = s("PHP XSS");
 $code = 'PD9waHAKY2xhc3MgU3JjIHsKICAgIGZ1bmN0aW9uIHNhbml0aXplKCR1c2VyX2lucHV0KSB7CiAg
