@@ -226,13 +226,17 @@ function host_chall(id, enabled){
         $('#loading_'+id).toggleClass("hide_loading");
         if (this.readyState == 4 && this.status == 200) {
             var resp = JSON.parse(this.responseText);
-            if(resp.success)
+            if(resp.status)
             {
                 if(resp.action == "start")
                     document.getElementById("label_"+id).innerHTML = "<button id='chall_url_btn' class='btn'><a href='http://"+document.domain+":"+resp.port+"' target='_blank'>Lab url</a></button>";
 
                 if(resp.action == "stop")
                     document.getElementById("label_"+id).innerHTML = "";
+            }
+            else
+            {
+                alert("Challenge Hosting failed. Please check with Admin !!!");
             }
                 
         }

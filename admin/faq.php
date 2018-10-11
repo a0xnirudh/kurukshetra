@@ -108,6 +108,12 @@ if (isset($_POST) && $_POST != []) {
                     Users
                 </a>
             </li>
+            <li>
+                <a href="containers.php">
+                    <i class="glyphicon glyphicon-cloud"></i>
+                    Hosted Challenges
+                </a>
+            </li>
             <li class="active">
                 <a href="#">
                     <i class="glyphicon glyphicon-screenshot"></i>

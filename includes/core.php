@@ -357,6 +357,27 @@ function get_all_users_data()
 }
 
 /**
+ * Get all the containers data - get_all_containers()
+ *
+ * Returns the list of all the containers and their data
+ *
+ * @return string
+ */
+function get_all_containers()
+{
+    global $conn;
+    $query = "SELECT * from container_details where status='running'";
+    $all_containers = mysqli_query($conn, $query);
+
+    $containers = [];
+    foreach ($all_containers as $container) {
+        array_push($containers, $container);
+    }
+    return json_encode($containers);
+}
+
+
+/**
  * Get all the FAQ - get_all_faq_data()
  *
  * Returns the list of all the FAQ's.
