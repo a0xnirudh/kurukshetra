@@ -1011,4 +1011,30 @@ function check_user_challenge_status($chall_id){
     return False;
 }
 
+function get_container_details($email) {
+    global $conn;
+    $container_id = array();
+
+    $query = "SELECT container_id from container_details where email_id=? AND status='running'";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("s",$email);
+    $stmt->execute();
+    $stmt->bind_result($id);
+
+    while ($stmt->fetch()) {
+        array_push($container_id, $id);
+    }
+    return $container_id;
+}
+
+function update_container_status($container_id) {
+    global $conn;
+
+    $query = "UPDATE container_details SET status='exited' where container_id=?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("s", $container_id);
+    $stmt->execute();
+}
+
+
 ?>

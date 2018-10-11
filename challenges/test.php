@@ -607,10 +607,7 @@ class Docker extends UnitTest
         echo json_encode($output);
 
         //Update DB with the container details
-        $query = "UPDATE container_details SET status='exited' where container_id=?";
-        $stmt = $conn->prepare($query);
-        $stmt->bind_param("s", $container_id);
-        $stmt->execute();
+        update_container_status($container_id);
 
         return;
     }

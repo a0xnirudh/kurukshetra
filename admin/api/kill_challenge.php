@@ -12,13 +12,16 @@ if(isset($_GET['id'])) {
     // Removing the container
     httpDelete($url . "/containers/" . $_GET['id'] . "?force=1");
 
-    $output = array("Success" => True);
+    // Update the DB
+    update_container_status($_GET['id']);
+
+    $output = array("status" => True);
     header('Content-Type: application/json');
     echo json_encode($output);
 }
 
 else {
-    $output = array("Success" => False);
+    $output = array("status" => False);
     header('Content-Type: application/json');
     echo json_encode($output);
 }
