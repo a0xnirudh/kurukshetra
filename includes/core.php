@@ -4,6 +4,74 @@ session_start();
 require $_SERVER['DOCUMENT_ROOT'].'/database/db_credentials.php';
 
 /**
+ * Initiate GET Request - httpGet()
+ *
+ * Function httpGet() will initiate a GET request to the parameter $url.
+ *
+ * @param string $url URL to which the GET request is initiated
+ *
+ * @return string $output Response of the GET request
+*/
+function httpGet($url)
+{
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+    $output=curl_exec($ch);
+
+    curl_close($ch);
+    return $output;
+}
+
+/**
+ * Initiate POST Request - httpPost()
+ *
+ * Function httpPost() will initiate a POST request to the parameter $url.
+ *
+ * @param string $url    URL to which the POST request is initiated
+ * @param string $params Parameters to be included in the POST request
+ *
+ * @return string $output Response of the POST request
+*/
+function httpPost($url, $params=null)
+{
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch,  CURLOPT_POSTFIELDS, $params);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
+
+    $output=curl_exec($ch);
+
+    curl_close($ch);
+    return $output;
+}
+
+/**
+ * Initiate DELETE Request - httpPost()
+ *
+ * Function httpDelete() will initiate a DELETE request to the parameter $url.
+ *
+ * @param string $url URL to which the POST request is initiated
+ *
+ * @return string $output Response of the DELETE request
+*/
+function httpDelete($url)
+{
+    $ch = curl_init();
+
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
+
+    $output = curl_exec($ch);
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+    curl_close($ch);
+    return $output;
+}
+
+/**
  * Check if a user is logged in or not - check_login()
  *
  * If a user is logged in, function will return true else it will redirect
