@@ -1,6 +1,5 @@
 $(document).ready(function(){    
     var sortable = true;
-    
     $('#table').bootstrapTable({
         url: "api/get_all_containers.php",
         columns: [{
@@ -9,18 +8,24 @@ $(document).ready(function(){
             valign: 'middle',
             align: "left"
         },{
-            field: 'container_id',
-            title: 'Container ID',
+            field: 'container_name',
+            title: 'Container Name',
             align: 'center',
-            valign: 'middle',
-            formatter: function (data, row, type){
-                return data.substring(0,12);
-            }
+            valign: 'middle'
         },{
             field: 'email_id',
             title: 'Email',
             valign: 'middle',
             sortable: sortable
+        },{
+            field: 'cpu',
+            title: 'CPU Usage',
+            valign: 'middle',
+            align: 'center',
+            sortable: sortable,
+            formatter: function (data,row,type){
+                return data+" %";
+            }
         },{
             field: 'timestamp',
             title: 'Up Time',
@@ -36,11 +41,17 @@ $(document).ready(function(){
             formatter: operateFormatter
         }]
     });
+    setInterval(function(){ 
+        $.getJSON("api/get_all_containers.php",function(data1,success){
+            $("#table").bootstrapTable("load",data1);
+        });
+    }, 3000);
+
 });
 
 
 function operateFormatter(value, row, index) {
-    return "<a class='kill btn btn-sm btn-danger' style='width: 100px' href='javascript:kill_chall(\""+value.substring(0,12)+"\")' > Kill </a>";
+    return "<a class='kill btn btn-sm btn-danger' style='width: 100px' href='javascript:kill_chall(\""+value+"\")' > Kill </a>";
 }
 
 function uptimeformatter(data,row,type){
@@ -61,7 +72,7 @@ function uptimeformatter(data,row,type){
     return_string += "<button class='btn btn-xs btn-success'>"+minutes+"</button> mins ";
 
     if(days == 0 && hours == 0 && minutes == 0)
-        return_string = "<button class='btn btn-xs btn-success'> "+seconds+" </button> seconds ";
+        return_string += "<button class='btn btn-xs btn-success'> "+seconds+" </button> seconds ";
 
     return return_string;
 
@@ -79,6 +90,7 @@ function kill_chall(container_id){
         }
         else
         {
+            data = JSON.parse(data);
             info += "Failed to kill the challenge.<br />Error Message: "+data.message;
             $("#result").removeClass("alert alert-success");
             $("#result").addClass("alert alert-danger");
@@ -87,7 +99,7 @@ function kill_chall(container_id){
         $("#result").html(info); 
         $.getJSON("api/get_all_containers.php",function(data1,success){
             $("#table").bootstrapTable("load",data1);
-        });            
+        });
     });
 }
 

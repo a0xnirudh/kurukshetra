@@ -468,10 +468,14 @@ function get_all_containers()
         $whitelisted_files = ['/etc', '/run', '/var/log', '/var/lib'];
         try {
             $result = json_decode(httpGet($api_url . "/containers/" . $container["container_id"] . "/changes"));
-            $final_files = [];
+            $final_files = array();
+            $final_files['modified'] = [];
+            $final_files['created'] = [];
+            $final_files['deleted'] = [];
+
             foreach ($result as $file) {
                 $count = 0;
-                if($file->Kind)
+                if($file->Kind == 0)
                 {
                     foreach($whitelisted_files as $whitelisted_file)
                     {
@@ -480,7 +484,31 @@ function get_all_containers()
                         $count++;
                     }
                     if ($count == count($whitelisted_files))
-                        array_push($final_files,$file->Path);
+                        array_push($final_files['modified'],$file->Path);
+                }
+
+                if($file->Kind == 1)
+                {
+                    foreach($whitelisted_files as $whitelisted_file)
+                    {
+                        if(startsWith($file->Path, $whitelisted_file))
+                            break;
+                        $count++;
+                    }
+                    if ($count == count($whitelisted_files))
+                        array_push($final_files['created'],$file->Path);
+                }
+
+                if($file->Kind == 2)
+                {
+                    foreach($whitelisted_files as $whitelisted_file)
+                    {
+                        if(startsWith($file->Path, $whitelisted_file))
+                            break;
+                        $count++;
+                    }
+                    if ($count == count($whitelisted_files))
+                        array_push($final_files['deleted'],$file->Path);
                 }
             }
         }
@@ -489,6 +517,7 @@ function get_all_containers()
         }
 
         $container['files'] = $final_files;
+        $container['cpu'] = rand(0,100);
         array_push($containers, $container);
     }
     return json_encode($containers);
@@ -1080,10 +1109,12 @@ function get_container_details($email) {
 function update_container_status($container_id) {
     global $conn;
 
-    $query = "UPDATE container_details SET status='exited' where container_id=?";
+    $query = "UPDATE container_details SET status='exited' where container_id=? and email_id=?";
     $stmt = $conn->prepare($query);
-    $stmt->bind_param("s", $container_id);
+    $stmt->bind_param("ss", $container_id,$_SESSION['userData']['email']);
     $stmt->execute();
+
+    return mysqli_stmt_affected_rows($stmt);
 }
 
 

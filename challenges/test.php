@@ -556,6 +556,7 @@ class Docker extends UnitTest
 
         $res = json_decode(httpPost($this->url . "/containers/create?name=kurukshetra-" . (string)$port, json_encode($params)), true);
         $this->container_id = $res["Id"];
+        $this->container_id = substr($this->container_id, 0, 12);
 
         // Starting the container
         $res = httpPost($this->url . "/containers/" . $this->container_id . "/start");
