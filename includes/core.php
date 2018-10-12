@@ -424,6 +424,12 @@ function get_all_users_data()
     return json_encode($users);
 }
 
+function startsWith($haystack, $needle)
+{
+    $length = strlen($needle);
+    return (substr($haystack, 0, $length) === $needle);
+}
+
 /**
  * Get all the containers data - get_all_containers()
  *
@@ -433,12 +439,56 @@ function get_all_users_data()
  */
 function get_all_containers()
 {
+    $api_url = "http://127.0.0.1:2376";
     global $conn;
     $query = "SELECT * from container_details where status='running'";
     $all_containers = mysqli_query($conn, $query);
 
     $containers = [];
     foreach ($all_containers as $container) {
+        # Get the current running processes
+        try {
+            $result = json_decode(httpGet($api_url . "/containers/" . $container["container_id"] . "/top"));
+            $processes = $result->Processes;
+        }
+        catch (Exception $ae ) {
+            $processes = array();
+        }
+
+        $final_processes = [];
+        foreach ($processes as $data) {
+            $process = array();
+            $process['user'] = $data[1];
+            $process['command'] = $data[3];
+            array_push($final_processes,$process);
+        }
+        $container['process'] = $final_processes;
+
+        # Get modified files from the container
+        $whitelisted_files = ['/etc', '/run', '/var/log', '/var/lib'];
+        try {
+            $result = json_decode(httpGet($api_url . "/containers/" . $container["container_id"] . "/changes"));
+            $final_files = [];
+            foreach ($result as $file) {
+                $count = 0;
+                if($file->Kind)
+                {
+                    foreach($whitelisted_files as $whitelisted_file)
+                    {
+                        if(startsWith($file->Path, $whitelisted_file))
+                            break;
+                        $count++;
+                    }
+                    if ($count == count($whitelisted_files))
+                        array_push($final_files,$file->Path);
+                }
+            }
+        }
+        catch (Exception $ae ) {
+            $final_files = array();
+        }
+
+        $container['files'] = $final_files;
         array_push($containers, $container);
     }
     return json_encode($containers);
