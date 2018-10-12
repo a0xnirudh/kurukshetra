@@ -1,18 +1,15 @@
 <?php
 /**
- * User management - users.php
+ * Continaer management - container.php
  *
  * PHP version 7.2
  *
- * Admins can enable/disable users and make other people Admins.
- *
- * By default, all the signed up users are enabled. Admins can disable
- * any account if necessary.
+ * Admins can Kill containers from the dashboard.
  *
  * @category PHP
  * @package  Kurukshetra
  * @author   Anirudh Anand <a0xnirudh@gmail.com>
- * @license  Apache 2.0
+ * @license  GPL v3.0
  */
 
 require $_SERVER['DOCUMENT_ROOT'].'/includes/core.php';
