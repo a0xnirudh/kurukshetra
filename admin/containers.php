@@ -34,10 +34,10 @@ check_admin();
     <!-- Our Custom CSS -->
     <link rel="stylesheet" href="/staticfiles/css/base.css">
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.12.1/bootstrap-table.min.css">
+    <link rel="stylesheet" href="/staticfiles/css/bootstrap-table.min.css">
 
     <!-- Latest compiled and minified JavaScript -->
-    <script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.12.1/bootstrap-table.min.js"></script>
+    <script src="/staticfiles/js/bootstrap-table.min.js"></script>
     <style>
         th {
             text-align: center;

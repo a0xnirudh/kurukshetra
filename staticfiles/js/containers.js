@@ -26,7 +26,8 @@ $(document).ready(function(){
             title: 'Up Time',
             align: 'center',
             valign: 'middle',
-            formatter: uptimeformatter
+            formatter: uptimeformatter,
+            sortable: sortable
         },{
             field: 'container_id',
             title: 'Action',
@@ -51,16 +52,16 @@ function uptimeformatter(data,row,type){
     var hours   = Math.floor(seconds / 3600);
     seconds  -= hours*3600;
     var minutes = Math.floor(seconds / 60);
+    seconds  -= minutes/60;
+    seconds = Math.floor(seconds);
     var return_string = "";
 
-    if(days > 0)
-        return_string += "<button class='btn btn-xs btn-danger'>"+days+"</button> days ";
+    return_string += "<button class='btn btn-xs btn-danger'>"+days+"</button> days ";
+    return_string += "<button class='btn btn-xs btn-primary'>"+hours+"</button> hrs ";
+    return_string += "<button class='btn btn-xs btn-success'>"+minutes+"</button> mins ";
 
-    if(hours > 0)
-        return_string += "<button class='btn btn-xs btn-primary'>"+hours+"</button> hours ";
-
-    if(minutes > 0)
-        return_string += "<button class='btn btn-xs btn-success'>"+minutes+"</button> minutes ";
+    if(days == 0 && hours == 0 && minutes == 0)
+        return_string = "<button class='btn btn-xs btn-success'> "+seconds+" </button> seconds ";
 
     return return_string;
 
