@@ -517,7 +517,28 @@ function get_all_containers()
         }
 
         $container['files'] = $final_files;
-        $container['cpu'] = rand(0,100);
+
+        # Get Container CPU usage
+
+        $result = json_decode(httpGet($api_url . "/containers/" . $container["container_id"] . "/stats?stream=false"));
+
+        $total_usage = (float)$result->cpu_stats->cpu_usage->total_usage;
+        $pre_total_usage = (float)$result->precpu_stats->cpu_usage->total_usage;
+        $cpu_delta = $total_usage - $pre_total_usage;
+
+        $system_cpu_usage = (float)$result->cpu_stats->system_cpu_usage;
+        $pre_system_cpu_usage = (float)$result->precpu_stats->system_cpu_usage;
+        $system_delta = $system_cpu_usage - $pre_system_cpu_usage;
+
+        $cpu_cores = (float)count($result->cpu_stats->cpu_usage->percpu_usage);
+        $cpu_percentage = 0.0;
+
+        if($system_delta > 0.0 && $cpu_delta > 0.0) {
+            $cpu_percentage = ($cpu_delta / $system_delta) * $cpu_cores * 100;
+        }
+
+        $container['cpu'] = number_format($cpu_percentage, 4);
+
         array_push($containers, $container);
     }
     return json_encode($containers);

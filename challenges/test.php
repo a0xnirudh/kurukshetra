@@ -556,14 +556,21 @@ class Docker extends UnitTest
 
         $res = json_decode(httpPost($this->url . "/containers/create?name=kurukshetra-" . (string)$port, json_encode($params)), true);
         $this->container_id = $res["Id"];
-        $this->container_id = substr($this->container_id, 0, 12);
-
-        // Starting the container
-        $res = httpPost($this->url . "/containers/" . $this->container_id . "/start");
 
         if($this->container_id) {
+            $this->container_id = substr($this->container_id, 0, 12);
+
+            // Starting the container
+            $res = httpPost($this->url . "/containers/" . $this->container_id . "/start");
+
             $_SESSION['challenge_status'][(int)$_POST['id']]['port'] = $port;
             $_SESSION['challenge_status'][(int)$_POST['id']]['container_id'] = $this->container_id;
+
+            // Adding the container details to DB
+            $query = "INSERT into container_details(email_id, container_id, container_name, port) VALUES (?,?,?,?)";
+            $stmt = $conn->prepare($query);
+            $stmt->bind_param("ssss", $_SESSION["userData"]["email"], $this->container_id, $container_name, $port);
+            $stmt->execute();
         }
 
         $output = array("status" => False,"port" => Null, "action" => $action);
@@ -573,11 +580,7 @@ class Docker extends UnitTest
         header('Content-Type: application/json');
         echo json_encode($output);
 
-        // Adding the container details to DB
-        $query = "INSERT into container_details(email_id, container_id, container_name, port) VALUES (?,?,?,?)";
-        $stmt = $conn->prepare($query);
-        $stmt->bind_param("ssss", $_SESSION["userData"]["email"], $this->container_id, $container_name, $port);
-        $stmt->execute();
+        
 
         return;
     }
