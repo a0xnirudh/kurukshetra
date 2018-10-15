@@ -1145,13 +1145,39 @@ function get_container_details($email) {
 function update_container_status($container_id) {
     global $conn;
 
-    $query = "UPDATE container_details SET status='exited' where container_id=? and email_id=?";
+    if($_SESSION['userData']['is_admin'] == 1)
+    {
+        $query = "UPDATE container_details SET status='exited' where container_id=?";
+        $stmt->bind_param("s", $container_id);
+    }
+    else
+    {
+        $query = "UPDATE container_details SET status='exited' where container_id=? and email_id=?";
+        $stmt->bind_param("ss", $container_id,$_SESSION['userData']['email']);
+    }
+
     $stmt = $conn->prepare($query);
-    $stmt->bind_param("ss", $container_id,$_SESSION['userData']['email']);
     $stmt->execute();
 
     return mysqli_stmt_affected_rows($stmt);
 }
 
+function get_container_stats($container_id){
+    $container_stats = array();
+    $container_stats['cpu'] = get_cpu_usage($container_id);
+    $container_stats['files'] = get_file_usage($container_id);
+    $container_stats['processes'] = get_process_info($container_id);
+
+    return $container_stats;
+
+}
 
 ?>
+
+
+
+
+
+
+
+

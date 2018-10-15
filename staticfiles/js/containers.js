@@ -68,7 +68,7 @@ $(document).ready(function(){
 
 
 function operateFormatter(value, row, index) {
-    var return_string = "<a class='view btn btn-sm btn-primary' style='width: 70px' href='view_chall_stats.php?id="+value+"' > View </a>";
+    var return_string = "<a class='view btn btn-sm btn-primary' style='width: 70px' href='view_chall_stats.php?id="+value+"' > Stats </a>";
     return_string += " | <a class='kill btn btn-sm btn-danger' style='width: 100px' href='javascript:kill_chall(\""+value+"\")' > Kill </a>";
     return return_string;
 
