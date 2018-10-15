@@ -1148,15 +1148,16 @@ function update_container_status($container_id) {
     if($_SESSION['userData']['is_admin'] == 1)
     {
         $query = "UPDATE container_details SET status='exited' where container_id=?";
+        $stmt = $conn->prepare($query);
         $stmt->bind_param("s", $container_id);
     }
     else
     {
         $query = "UPDATE container_details SET status='exited' where container_id=? and email_id=?";
+        $stmt = $conn->prepare($query);
         $stmt->bind_param("ss", $container_id,$_SESSION['userData']['email']);
     }
 
-    $stmt = $conn->prepare($query);
     $stmt->execute();
 
     return mysqli_stmt_affected_rows($stmt);
