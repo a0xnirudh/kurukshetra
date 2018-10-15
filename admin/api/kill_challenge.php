@@ -5,7 +5,7 @@
 
     $url = "http://127.0.0.1:2376";
 
-    if(isset($_GET['id'])) {
+    if(isset($_GET['id']) && $_GET['id'] != "") {
         // Killing the container
         $result = httpPost($url . "/containers/" . $_GET['id'] . "/kill");
 
