@@ -63,7 +63,7 @@ $(document).ready(function(){
         $.getJSON("api/get_all_containers.php",function(data1,success){
             $("#table").bootstrapTable("load",data1);
         });
-    }, 3000);
+    }, 10000);
 });
 
 
