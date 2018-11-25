@@ -1171,11 +1171,3 @@ function get_container_stats($container_id){
 }
 
 ?>
-
-
-
-
-
-
-
-
