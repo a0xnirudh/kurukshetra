@@ -448,10 +448,7 @@ function get_all_containers()
     foreach ($all_containers as $container) {
         $container['process'] = get_process_info($container["container_id"]);
         $container['files'] = get_file_usage($container["container_id"]);
-
-        $container['cpu'] = (float)(rand(0,400));
-        if ($all_containers->num_rows < 4)
-            $container['cpu'] = get_cpu_usage($container["container_id"]);
+        $container['cpu'] = get_cpu_usage($container["container_id"]);
 
         array_push($containers, $container);
     }
