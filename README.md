@@ -4,7 +4,7 @@
   <img src="/staticfiles/img/logo.png" alt="Kurukshetra"/>
 </p>
 
-[![Github Release Version](https://img.shields.io/badge/release-V1.0-green.svg)](https://github.com/a0xnirudh/kurukshetra)
+[![Github Release Version](https://img.shields.io/badge/release-V2.0-green.svg)](https://github.com/a0xnirudh/kurukshetra)
 [![Github Release Version](https://img.shields.io/badge/php-7.2-green.svg)](https://github.com/a0xnirudh/kurukshetra)
 [![License](https://img.shields.io/badge/License-GPL%20v3-green.svg)](https://github.com/a0xnirudh/kurukshetra/blob/master/LICENSE)
 [![Kurukshetra loves Open source](https://badges.frapsoft.com/os/v1/open-source.svg?v=103)](https://github.com/a0xnirudh/kurukshetra)
