@@ -520,7 +520,7 @@ class Docker extends UnitTest
 
         if($language == "python"){
             $params = (object) [
-            "Cmd" => ["python", "src.py"],
+            "Cmd" => ["python3", "src.py"],
             "User" => "kurukshetra",
             "Image" => "kurukshetra",
             "WorkingDir" => "/var/www/html",
