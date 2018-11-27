@@ -70,6 +70,12 @@ if (isset($_POST) && $_POST != array()) {
                 </a>
             </li>
             <li>
+                <a href="containers.php">
+                    <i class="glyphicon glyphicon-cloud"></i>
+                    Hosted Challenges
+                </a>
+            </li>
+            <li>
                 <a href="faq.php">
                     <i class="glyphicon glyphicon-screenshot"></i>
                     FAQ

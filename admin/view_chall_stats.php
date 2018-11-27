@@ -1,20 +1,21 @@
 <?php
 /**
- * Admin index page - index.php
+ * Continaer management - container.php
  *
  * PHP version 7.2
  *
- * Index page for admin where charts based on type/severity/languages
- * are shown to the admin
+ * Admins can Kill containers from the dashboard.
  *
  * @category PHP
  * @package  Kurukshetra
  * @author   Anirudh Anand <a0xnirudh@gmail.com>
- * @license  Apache 2.0
+ * @license  GPL v3.0
  */
 
 require $_SERVER['DOCUMENT_ROOT'].'/includes/core.php';
 check_admin();
+
+$container_stats = get_container_stats($_GET['id']);
 
 ?>
 
@@ -32,11 +33,20 @@ check_admin();
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <!-- Our Custom CSS -->
     <link rel="stylesheet" href="/staticfiles/css/base.css">
-    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
-    <script src="https://code.highcharts.com/highcharts.js"></script>
-    <script src="https://code.highcharts.com/modules/exporting.js"></script>
-    <script src="https://code.highcharts.com/modules/export-data.js"></script>
-    <script src='/staticfiles/js/index.js'></script>
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <link rel="stylesheet" href="/staticfiles/css/bootstrap-table.min.css">
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="/staticfiles/js/bootstrap-table.min.js"></script>
+    <style>
+        th {
+            text-align: center;
+            background-color: #333333;
+            color: white;
+            min-height: 50px;
+        }
+
+    </style>
 </head>
 <body>
 <div class="wrapper">
@@ -50,8 +60,8 @@ check_admin();
         </div>
 
         <ul class="list-unstyled components">
-            <li class="active">
-                <a href="#">
+            <li>
+                <a href="index.php">
                     <i class="glyphicon glyphicon-briefcase"></i>
                     Play Ground
                 </a>
@@ -72,8 +82,8 @@ check_admin();
                     Users
                 </a>
             </li>
-            <li>
-                <a href="containers.php">
+            <li class="active">
+                <a href="#">
                     <i class="glyphicon glyphicon-cloud"></i>
                     Hosted Challenges
                 </a>
@@ -104,47 +114,65 @@ check_admin();
         <nav class="navbar navbar-default">
             <div class="container-fluid">
                 <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                    <h3 id='page_title'>Kurukshetra</h3>
+                    <h3 id='page_title'>User Management</h3>
                 </div>
             </div>
         </nav>
 
         <div id="page_content">
-            <div class="container-fluid bg-4 text-center">
-                <div align="left">
-                    Click here to view <a style="text-decoration:underline" href="javascript:show_token()">Developer Token</a>
-                    </br></br>
-                </div>
-                <div class="row no-gutter">
-                    <div class="columns col-sm-4">
-                        <div id="container" style="min-width: 310px; height: 300px; max-width: 600px; margin: 0 auto"></div>
-                    </div>
-                    <div class="columns col-sm-4">
-                        <div id="container2" style="min-width: 310px; height: 300px; max-width: 600px; margin: 0 auto"></div>
-                    </div>
-                    <div class="columns col-sm-4">
-                        <div id="container3" style="min-width: 310px; height: 300px; max-width: 600px; margin: 0 auto"></div>
-                    </div>
-                </div>
-            </div>
+            <div id="result"></div>
+            <script src="/staticfiles/js/container_stats.js"></script>
+            <table>
+                <tbody>
+                    <tr>
+                        <td><H3>Container Id</H3></td>
+                        <td><H3><?php echo $_GET['id']; ?></H3></td>
+                    </tr>
+                    <tr>
+                        <td><H5>CPU Usage</H5></td>
+                        <td><?php echo $container_stats['cpu']; ?></td>
+                    </tr>
+                    <tr>
+                        <td><H5>Files Modified</H5></td>
+                        <td>
+                            <?php 
+                                foreach ($container_stats['files'] as $file) {
+                                     foreach ($file as $index => $path) {
+                                         echo $path."</br>";
+                                     }
+                                 } ; 
+                            ?>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><H5>Processes Running</H5></td>
+                        <td>
+                            <?php 
+                                foreach ($container_stats['processes'] as $processes) {
+                                     foreach ($processes as $process) {
+                                         echo $process."</br>";
+                                     };
+                                 } ; 
+                            ?>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
         </div>
         <div class="line"></div>
     </div>
 </div>
 <!-- jQuery CDN -->
-<script src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
 <!-- Bootstrap Js CDN -->
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
 <script type="text/javascript">
     $(document).ready(function () {
         $('#sidebarCollapse').on('click', function () {
             $('#sidebar').toggleClass('active');
         });
     });
-
-    function show_token(){
-        alert("<?php echo get_dev_token(); ?>");
-    }
 </script>
 </body>
 </html>

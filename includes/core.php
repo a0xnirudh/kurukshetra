@@ -3,6 +3,73 @@
 session_start();
 require $_SERVER['DOCUMENT_ROOT'].'/database/db_credentials.php';
 
+/**
+ * Initiate GET Request - httpGet()
+ *
+ * Function httpGet() will initiate a GET request to the parameter $url.
+ *
+ * @param string $url URL to which the GET request is initiated
+ *
+ * @return string $output Response of the GET request
+*/
+function httpGet($url)
+{
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+    $output=curl_exec($ch);
+
+    curl_close($ch);
+    return $output;
+}
+
+/**
+ * Initiate POST Request - httpPost()
+ *
+ * Function httpPost() will initiate a POST request to the parameter $url.
+ *
+ * @param string $url    URL to which the POST request is initiated
+ * @param string $params Parameters to be included in the POST request
+ *
+ * @return string $output Response of the POST request
+*/
+function httpPost($url, $params=null)
+{
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch,  CURLOPT_POSTFIELDS, $params);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
+
+    $output=curl_exec($ch);
+
+    curl_close($ch);
+    return $output;
+}
+
+/**
+ * Initiate DELETE Request - httpPost()
+ *
+ * Function httpDelete() will initiate a DELETE request to the parameter $url.
+ *
+ * @param string $url URL to which the POST request is initiated
+ *
+ * @return string $output Response of the DELETE request
+*/
+function httpDelete($url)
+{
+    $ch = curl_init();
+
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
+
+    $output = curl_exec($ch);
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+    curl_close($ch);
+    return $output;
+}
 
 /**
  * Check if a user is logged in or not - check_login()
@@ -86,7 +153,8 @@ function get_categories()
 function get_challenges()
 {
     global $conn;
-    $query = "SELECT * from challenges where type in (SELECT distinct name from categories)";
+    $email_id = $_SESSION['userData']['email'];
+    $query = "SELECT * from challenges where (type in (SELECT distinct name from categories) and enabled = 1 or id in (select distinct level_id from user_level_enabled_challenges where email_id = '$email_id'))";
     $result = mysqli_query($conn, $query);
     return $result;
 }
@@ -356,6 +424,139 @@ function get_all_users_data()
     return json_encode($users);
 }
 
+function startsWith($haystack, $needle)
+{
+    $length = strlen($needle);
+    return (substr($haystack, 0, $length) === $needle);
+}
+
+/**
+ * Get all the containers data - get_all_containers()
+ *
+ * Returns the list of all the containers and their data
+ *
+ * @return string
+ */
+function get_all_containers()
+{
+    $api_url = "http://127.0.0.1:2376";
+    global $conn;
+    $query = "SELECT * from container_details where status='running'";
+    $all_containers = mysqli_query($conn, $query);
+
+    $containers = [];
+    foreach ($all_containers as $container) {
+        $container['process'] = get_process_info($container["container_id"]);
+        $container['files'] = get_file_usage($container["container_id"]);
+        $container['cpu'] = get_cpu_usage($container["container_id"]);
+
+        array_push($containers, $container);
+    }
+    return json_encode($containers);
+}
+
+function get_process_info($container_id){
+    # Get the current running processes
+    $api_url = "http://127.0.0.1:2376";
+    try {
+        $result = json_decode(httpGet($api_url . "/containers/" . $container_id . "/top"));
+        $processes = $result->Processes;
+    }
+    catch (Exception $ae ) {
+        $processes = array();
+    }
+
+    $final_processes = [];
+    foreach ($processes as $data) {
+        $process = array();
+        $process['user'] = $data[1];
+        $process['command'] = $data[3];
+        array_push($final_processes,$process);
+    }
+    return $final_processes;
+}
+
+function get_file_usage($container_id){
+    # Get modified files from the container
+    $api_url = "http://127.0.0.1:2376";
+    $whitelisted_files = ['/etc', '/run', '/var/log', '/var/lib'];
+    try {
+        $result = json_decode(httpGet($api_url . "/containers/" . $container_id . "/changes"));
+        $final_files = array();
+        $final_files['modified'] = [];
+        $final_files['created'] = [];
+        $final_files['deleted'] = [];
+
+        foreach ($result as $file) {
+            $count = 0;
+            if($file->Kind == 0)
+            {
+                foreach($whitelisted_files as $whitelisted_file)
+                {
+                    if(startsWith($file->Path, $whitelisted_file))
+                        break;
+                    $count++;
+                }
+                if ($count == count($whitelisted_files))
+                    array_push($final_files['modified'],$file->Path);
+            }
+
+            if($file->Kind == 1)
+            {
+                foreach($whitelisted_files as $whitelisted_file)
+                {
+                    if(startsWith($file->Path, $whitelisted_file))
+                        break;
+                    $count++;
+                }
+                if ($count == count($whitelisted_files))
+                    array_push($final_files['created'],$file->Path);
+            }
+
+            if($file->Kind == 2)
+            {
+                foreach($whitelisted_files as $whitelisted_file)
+                {
+                    if(startsWith($file->Path, $whitelisted_file))
+                        break;
+                    $count++;
+                }
+                if ($count == count($whitelisted_files))
+                    array_push($final_files['deleted'],$file->Path);
+            }
+        }
+    }
+    catch (Exception $ae ) {
+        $final_files = array();
+    }
+
+    return $final_files;
+}
+function get_cpu_usage($container_id){
+    # Get Container CPU usage
+    $api_url = "http://127.0.0.1:2376";
+    
+    $result = json_decode(httpGet($api_url . "/containers/" . $container_id . "/stats?stream=false"));
+
+    $total_usage = (float)$result->cpu_stats->cpu_usage->total_usage;
+    $pre_total_usage = (float)$result->precpu_stats->cpu_usage->total_usage;
+    $cpu_delta = $total_usage - $pre_total_usage;
+
+    $system_cpu_usage = (float)$result->cpu_stats->system_cpu_usage;
+    $pre_system_cpu_usage = (float)$result->precpu_stats->system_cpu_usage;
+    $system_delta = $system_cpu_usage - $pre_system_cpu_usage;
+
+    $cpu_cores = (float)count($result->cpu_stats->cpu_usage->percpu_usage);
+    $cpu_percentage = 0.0;
+
+    if($system_delta > 0.0 && $cpu_delta > 0.0) {
+        $cpu_percentage = ($cpu_delta / $system_delta) * $cpu_cores * 100;
+    }
+
+    return number_format($cpu_percentage, 4);
+}
+
+
 /**
  * Get all the FAQ - get_all_faq_data()
  *
@@ -608,16 +809,27 @@ function show_challenge($id, $challenge){
 }
 
 
-function print_message($error, $msg){
-    if($msg){
-        if(!$error){
+/**
+ * Prints success/error messages
+ *
+ * Function which prints the error messages depending up on success or failure
+ * of an action
+ *
+ * @param boolean $error Trigger error if true
+ * @param string  $msg   Message printed to the user
+ *
+ * @return void
+ */
+function Print_message($error, $msg)
+{
+    if ($msg) {
+        if (!$error) {
             ?>
             <div class="alert alert-success">
                 <strong>Success!</strong> <?php echo $msg; ?>
             </div>
             <?php
-        }
-        else{
+        } else {
             ?>
             <div class="alert alert-danger">
                 <strong>Danger!</strong> <?php echo $msg; ?>
@@ -739,21 +951,21 @@ function enable_disable_challenge($id,$action){
 
 function chall_per_type(){
     global $conn;
-    $prevQuery = "SELECT type as name, count(*) as y from challenges group by type";
+    $prevQuery = "SELECT type as name, count(*) as y from challenges where (enabled = 1 and approved = 1) group by type";
     $result = mysqli_query($conn, $prevQuery);
     return $result;
 }
 
 function chall_per_lang(){
     global $conn;
-    $prevQuery = "SELECT language as name, count(*) as y from challenges group by language";
+    $prevQuery = "SELECT language as name, count(*) as y from challenges where (enabled = 1 and approved = 1) group by language";
     $result = mysqli_query($conn, $prevQuery);
     return $result;
 }
 
 function chall_per_difficulty(){
     global $conn;
-    $prevQuery = "SELECT difficulty as name, count(*) as y from challenges group by difficulty";
+    $prevQuery = "SELECT difficulty as name, count(*) as y from challenges where (enabled = 1 and approved = 1) group by difficulty";
     $result = mysqli_query($conn, $prevQuery);
     return $result;
 }
@@ -779,6 +991,183 @@ function get_admin_email(){
     $stmt->bind_result($email);
     $stmt->fetch();
     return $email;
+}
+
+function get_challenge_language($id) {
+    global $conn;
+    $query = "select language from challenges where id=?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("d", $id);
+    $stmt->execute();
+    $stmt->bind_result($type);
+    $stmt->fetch();
+
+    return $type;
+}
+
+
+function uuid_v4() {
+    return sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
+        mt_rand(0, 0xffff), mt_rand(0, 0xffff),
+        mt_rand(0, 0xffff),
+        mt_rand(0, 0x0fff) | 0x4000,
+        mt_rand(0, 0x3fff) | 0x8000,
+        mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff)
+    );
+  }
+
+function get_challenge_code($email_id,$level_id,$enabled) {
+    global $conn;
+
+    if($enabled == 1)
+    {
+        $chall_codes = get_challenge_flag($email_id,$level_id);
+
+        foreach ($chall_codes as $chall_code) {
+            return $chall_code['chall_code'];
+        }
+
+        $chall_code = uuid_v4();
+
+        $prevQuery = "INSERT INTO user_level_enabled_challenges(chall_code,level_id,email_id,enabled) values(?,?,?,?)";
+        $stmt = $conn->prepare($prevQuery);
+
+        $stmt->bind_param("sssd",$chall_code,$level_id,$email_id,$enabled);
+        $stmt->execute();
+    }
+    else
+    {
+        $prevQuery = "UPDATE user_level_enabled_challenges set enabled=? where level_id=? and email_id=?";
+        $stmt = $conn->prepare($prevQuery);
+
+        $stmt->bind_param("dds",$enabled,$level_id,$email_id);
+        $stmt->execute();
+    }
+
+    if(mysqli_stmt_affected_rows($stmt))
+        return $chall_code;
+    else
+        return null;
+
+}
+
+function get_challenge_flag($email_id,$level_id) {;
+
+    global $conn;
+    $prevQuery = "SELECT chall_code from user_level_enabled_challenges where email_id = '$email_id' and level_id = $level_id limit 1";
+    $results = mysqli_query($conn, $prevQuery);
+
+    return $results;
+
+}
+
+function check_enabled_level($level_id) {
+    global $conn;
+
+    $prevQuery = "(SELECT c.enabled from challenges c where (c.id = $level_id and c.enabled = 1)) union (SELECT b.enabled from user_level_enabled_challenges b where (b.level_id = $level_id and b.email_id = '".$_SESSION['userData']['email']."' and b.enabled = 1))";
+    $results = mysqli_query($conn, $prevQuery);
+
+    foreach ($results as $row) {
+        return True;
+    }
+
+    die(header('Location: /challenges/index.php?error=unauthorised'));
+}
+
+function get_dev_token(){
+    $config = parse_ini_file('/var/config/.kurukshetra.ini');
+    $token = $config['token'];
+
+    return $token;
+
+}
+
+function update_user_challenge_status($chall_id){
+    global $conn;
+
+    $user_email = $_SESSION['userData']['email'];
+
+    if(check_user_challenge_status($chall_id)){
+        return null;
+    }
+
+    $prevQuery = "INSERT INTO user_challenges(user_email, chall_id) values(?,?)";
+    $stmt = $conn->prepare($prevQuery);
+
+    $stmt->bind_param("ss",$user_email,$chall_id);
+    $stmt->execute();
+
+    if(mysqli_stmt_affected_rows($stmt))
+        return True;
+    else
+        return False;
+}
+
+function check_user_challenge_status($chall_id){
+    global $conn;
+
+    $user_email = $_SESSION['userData']['email'];
+
+    $query = "SELECT count(*) as count from user_challenges where chall_id=? and user_email=?";
+    $stmt = $conn->prepare($query);
+
+    $stmt->bind_param("ds",$chall_id,$user_email);
+    $stmt->execute();
+
+    $stmt->bind_result($count);
+    $stmt->fetch();
+
+    if($count > 0)
+        return True;
+
+    return False;
+}
+
+function get_container_details($email) {
+    global $conn;
+    $container_id = array();
+
+    $query = "SELECT container_id from container_details where email_id=? AND status='running'";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("s",$email);
+    $stmt->execute();
+    $stmt->bind_result($id);
+
+    while ($stmt->fetch()) {
+        array_push($container_id, $id);
+    }
+    return $container_id;
+}
+
+function update_container_status($container_id) {
+    global $conn;
+
+    if($_SESSION['userData']['is_admin'] == 1)
+    {
+        $query = "UPDATE container_details SET status='exited' where container_id=?";
+        $stmt = $conn->prepare($query);
+        $stmt->bind_param("s", $container_id);
+    }
+    else
+    {
+        $query = "UPDATE container_details SET status='exited' where container_id=? and email_id=?";
+        $stmt = $conn->prepare($query);
+        $stmt->bind_param("ss", $container_id,$_SESSION['userData']['email']);
+    }
+
+    $stmt->execute();
+
+    return mysqli_stmt_affected_rows($stmt);
+}
+
+function get_container_stats($container_id){
+    $container_stats = array();
+    $container_stats['cpu'] = get_cpu_usage($container_id);
+    $container_stats['files'] = get_file_usage($container_id);
+    $container_stats['processes'] = get_process_info($container_id);
+
+    return $container_stats;
+
 }
 
 ?>

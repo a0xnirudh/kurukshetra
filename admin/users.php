@@ -83,6 +83,12 @@ check_admin();
                 </a>
             </li>
             <li>
+                <a href="containers.php">
+                    <i class="glyphicon glyphicon-cloud"></i>
+                    Hosted Challenges
+                </a>
+            </li>
+            <li>
                 <a href="faq.php">
                     <i class="glyphicon glyphicon-screenshot"></i>
                     FAQ

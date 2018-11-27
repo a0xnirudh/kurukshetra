@@ -16,6 +16,7 @@ require $_SERVER['DOCUMENT_ROOT'].'/includes/core.php';
 if (!check_login()) {//not logged in? redirect to login page
     header('Location: /login/index.php');
 }
+
 ?>
 
 <!DOCTYPE html>
@@ -27,6 +28,9 @@ if (!check_login()) {//not logged in? redirect to login page
     <link rel="shortcut icon" type="image/png" href="/staticfiles/img/favicon.png"/>
 
     <title>Kurukshetra</title>
+
+    <link href="/staticfiles/css/bootstrap-toggle.min.css" rel="stylesheet">
+    <script src="/staticfiles/js/bootstrap-toggle.min.js"></script>
 
     <!-- Bootstrap CSS CDN -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
@@ -100,6 +104,8 @@ if (!check_login()) {//not logged in? redirect to login page
                     <span id="challenge-type-head" class="title">All Challenges</span>
                     <div class="btn-group pull-right" id="easy-med-hard-btn" role="group">
                         Welcome <span class="title"><?php welcome_message(); ?> </span></br></br>
+
+
                         <?php
                         $difficulties = get_difficulties();
                         foreach ($difficulties as $difficulty) {
@@ -111,16 +117,77 @@ if (!check_login()) {//not logged in? redirect to login page
                 </div>
             </div>
         </nav>
+        <?php
+                        
+            if($_GET['error'] == "unauthorised")
+                Print_message(true, "User Not authorized.");
+
+        ?>
+        <style>
+        #chall_url_btn {
+            text-decoration: None;
+            border: 1px solid #337ab7;
+            color: #337ab7;
+            text-transform: bold;
+        }
+
+        #chall_url_btn:hover {
+            background-color: #337ab7;
+            color: white;
+        }
+
+        .show_loading {
+            display: inline-block;
+        }
+
+        .hide_loading {
+            display: none;
+        }
+
+        </style>
         <div id="page_content">
             <div class="col-md-12 challenge-list">
                 <?php
                 $result = get_challenges();
+
+                if($result->num_rows == 0)
+                    echo "<center><label>No Challenges available for you. Try again later.</label></center></label>";
+
                 foreach ($result as $row) {
 
                     echo '<div class="challenge-box '.$row['type'].' '.$row['difficulty'].'">
                                 <br>
-                                <a id="'.$row['name'].'" class="challenge-title" href="challenge.php?id='.$row['id'].'">'.$row['name'].'</a>
-                                <p class="challenge-description">
+                                <a id="'.$row['name'].'" class="challenge-title" href="challenge.php?id='.$row['id'].'">'.$row['name'].'</a>';
+
+                    if(check_user_challenge_status($row['id']))
+                        echo "<font color='green'> (completed)</font>";
+
+                    if(isset($_SESSION['challenge_status'][(int)$row['id']]['port']))
+                        {
+                            $checked = 'checked';
+                            $port = $_SESSION['challenge_status'][(int)$row['id']]['port'];
+                            $protocal = $_SERVER['REQUEST_SCHEME'].'://';
+                            $chall_url = $protocal.$_SERVER['SERVER_NAME'].':'.$port;
+                        }
+                    else
+                        {
+                            $checked = '';
+                            $port = None;
+                            $protocal = $_SERVER['REQUEST_SCHEME'].'://';
+                            $chall_url = $protocal.$_SERVER['SERVER_NAME'].':'.$port;
+                        }
+
+                    echo '<div style="float: right; padding-right: 3%;">
+                            <span class="hide_loading" id="loading_'.$row['id'].'"><font color="#337ab7" class="glyphicon glyphicon-hourglass"> Loading.... </font> </span>
+                            <label id="label_'.$row['id'].'">';
+
+                    if($checked != ''){
+                        echo '<button id="chall_url_btn" class="btn"><a href="'.$chall_url.'" target="_blank">Lab url</a></button>';
+                    }
+                    echo '</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <input id='.$row['id'].' '.$checked.' type="checkbox" onchange="host_chall('.$row['id'].',this.checked)" data-toggle="toggle" data-on="Stop" data-off="Start" data-onstyle="danger" data-offstyle="success" >
+                          </div>';
+                    echo '<p class="challenge-description">
                                     '.$row['intro'].'
                                 </p>
                                 <p class="challenge-type">Language : <span style="color:#535353">' . $row['language'] . '</span></p>
@@ -128,7 +195,8 @@ if (!check_login()) {//not logged in? redirect to login page
                                 <p class="challenge-type">Difficulty : <span class="difficulty-'.$row['difficulty'].' '.$row['difficulty'].'">' . $row['difficulty'] . '</span></p>
                                 <div class="button-style">
                                     <button onclick="window.open(\'challenge.php?id=' . $row['id'] . '\', \'_blank\');" class="solve-challenge-btn btn btn-primary">Solve Challenge</button>
-                                </div></div>';
+                                </div>
+                                </div>';
                 }
                 ?>
             </div>
@@ -136,9 +204,49 @@ if (!check_login()) {//not logged in? redirect to login page
     </div>
 </div>
 <!-- jQuery CDN -->
-<script src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
+<script src="/staticfiles/js/jquery-1.12.0.min.js"></script>
+<script src="/staticfiles/js/bootstrap-toggle.js"></script>
+
 <!-- Bootstrap Js CDN -->
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="/staticfiles/js/3.3.7/bootstrap.min.js"></script>
+
+<script type="text/javascript">
+function host_chall(id, enabled){
+
+    var action = "stop";
+    if(enabled == true){
+        action = "start";
+    }
+
+    var data = "id="+id+"&action="+action;
+    $('#loading_'+id).toggleClass("show_loading");
+
+      var xhttp = new XMLHttpRequest();
+      xhttp.onreadystatechange = function() {
+        $('#loading_'+id).toggleClass("hide_loading");
+        if (this.readyState == 4 && this.status == 200) {
+            var resp = JSON.parse(this.responseText);
+            if(resp.status)
+            {
+                if(resp.action == "start")
+                    document.getElementById("label_"+id).innerHTML = "<button id='chall_url_btn' class='btn'><a href='http://"+document.domain+":"+resp.port+"' target='_blank'>Lab url</a></button>";
+
+                if(resp.action == "stop")
+                    document.getElementById("label_"+id).innerHTML = "";
+            }
+            else
+            {
+                alert("Challenge Hosting failed. Please check with Admin !!!");
+            }
+                
+        }
+      };
+      xhttp.open("POST", "/challenges/test.php", true);
+      xhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+      xhttp.send(data);
+
+}
+</script>
 
 <script type="text/javascript">
     $(document).ready(function () {

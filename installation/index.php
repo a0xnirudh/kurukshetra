@@ -106,7 +106,6 @@ if (file_exists('/var/config/.kurukshetra.ini')) {
             </div>
         </div>
     </div>
-
     <div class="wizard-card wizard-card-overlay" data-cardname="services">
         <h3>Google Auth Settings</h3>
 
