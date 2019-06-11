@@ -42,6 +42,8 @@ Anirudh Anand ([@a0xnirudh](https://twitter.com/a0xnirudh))
 Mohan KK ([@MohanKallepalli](https://twitter.com/MohanKallepalli))
 
 ##### Project Contributors:
-  
+
+Arjun T U ([@arjunkikz](https://twitter.com/arjunkikz))  
+Durga Subramanian ([@0xdug](https://twitter.com/0xdug))  
 Ankur Bhargava ([@_AnkurB](https://twitter.com/_AnkurB))  
 Prajal Kulkarni ([@prajalkulkarni](https://twitter.com/prajalkulkarni))
