@@ -16,7 +16,7 @@ Kurukshetra is composed of two components, the backend framework written in PHP,
 
 
 ## Detailed Tool Documentation:
-> [https://docs.kurukshetra.io](https://docs.kurukshetra.io)
+> [https://0daylabs.com/kurukshetra/](https://0daylabs.com/kurukshetra/)
 
 ## Installation
 
